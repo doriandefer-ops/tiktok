@@ -4,6 +4,7 @@
 Usage :
     python3 make_videos.py                          # génère les 3 vidéos (voix Microsoft « Rémy », internet requis)
     python3 make_videos.py --voix kokoro            # voix féminine hors-ligne
+    python3 make_videos.py --voix aucune            # sans voix (pour enregistrer la tienne dans CapCut)
     python3 make_videos.py --voix piper             # voix masculine hors-ligne (moins naturelle)
     python3 make_videos.py --avant a.png --apres b.png
         # version « avant/après » avec TES vraies captures (jour 1 / aujourd'hui)
@@ -96,6 +97,8 @@ class Voice:
         if self.engine != "edge":
             for a, b in RESPELL.items():
                 text = text.replace(a, b)
+        if self.engine == "aucune":  # silence de la durée d'une lecture normale (~14 caractères/s)
+            return np.zeros(int(max(1.2, len(text) / 14) * SR), dtype=np.float32)
         if self.engine == "kokoro":
             audio, sr = self.k.create(text, voice="ff_siwis", speed=1.08, lang="fr-fr")
             return audio.astype(np.float32)
@@ -263,7 +266,7 @@ def avant_apres(avant=None, apres=None):
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
-    p.add_argument("--voix", choices=["edge", "kokoro", "piper"], default="edge")
+    p.add_argument("--voix", choices=["edge", "kokoro", "piper", "aucune"], default="edge")
     p.add_argument("--avant", help="capture du jour 1 (png/jpg)")
     p.add_argument("--apres", help="capture d'aujourd'hui (png/jpg)")
     a = p.parse_args()
