@@ -2,8 +2,8 @@
 """Génère les vidéos TikTok 9:16 (1080x1920) : fond vidéo + texte style Snap + voix off.
 
 Usage :
-    python3 make_videos.py                          # génère les 3 vidéos
-    python3 make_videos.py --voix edge              # voix Microsoft (la plus réaliste, nécessite internet)
+    python3 make_videos.py                          # génère les 3 vidéos (voix Microsoft « Rémy », internet requis)
+    python3 make_videos.py --voix kokoro            # voix féminine hors-ligne
     python3 make_videos.py --voix piper             # voix masculine hors-ligne (moins naturelle)
     python3 make_videos.py --avant a.png --apres b.png
         # version « avant/après » avec TES vraies captures (jour 1 / aujourd'hui)
@@ -15,6 +15,7 @@ Les sous-titres sont calés sur la voix : chaque segment dure le temps de sa phr
 """
 import argparse
 import asyncio
+import os
 import subprocess
 import tempfile
 import urllib.request
@@ -106,9 +107,12 @@ class Voice:
                                input=text.encode(), check=True, capture_output=True)
             else:
                 import edge_tts
-                asyncio.run(edge_tts.Communicate(text, "fr-FR-RemyMultilingualNeural", rate="+8%").save(str(raw)))
+                asyncio.run(edge_tts.Communicate(text, "fr-FR-RemyMultilingualNeural", rate="+10%",
+                                                   proxy=os.environ.get("HTTPS_PROXY")).save(str(raw)))
             wav = Path(tmp) / "voix.wav"
-            subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", raw, "-ar", str(SR), "-ac", "1", wav], check=True)
+            trim = "silenceremove=start_periods=1:start_threshold=-45dB"
+            subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", raw, "-af", f"{trim},areverse,{trim},areverse",
+                            "-ar", str(SR), "-ac", "1", wav], check=True)
             audio, _ = sf.read(wav, dtype="float32")
             return audio
 
@@ -259,7 +263,7 @@ def avant_apres(avant=None, apres=None):
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
-    p.add_argument("--voix", choices=["kokoro", "edge", "piper"], default="kokoro")
+    p.add_argument("--voix", choices=["edge", "kokoro", "piper"], default="edge")
     p.add_argument("--avant", help="capture du jour 1 (png/jpg)")
     p.add_argument("--apres", help="capture d'aujourd'hui (png/jpg)")
     a = p.parse_args()
