@@ -13,3 +13,12 @@ dropshipping et on documente **les vrais chiffres**, sans faux train de vie.
 | `videos/` | 3 vidéos 9:16 prêtes à poster + le script qui les génère |
 
 Règle d'or : **tout chiffre montré à l'écran doit être réel et capturé.**
+
+## Régénérer les vidéos
+```bash
+pip install kokoro-onnx soundfile numpy pillow   # + ffmpeg
+cd videos && python3 make_videos.py               # voix Kokoro hors-ligne (téléchargée au 1er lancement)
+python3 make_videos.py --voix edge                # voix Microsoft, plus réaliste (pip install edge-tts, internet)
+```
+- **Fonds** : dépose tes propres clips dans `videos/fonds/` (filmés au téléphone, ou des vidéos libres de droits Pexels/Pixabay). Sinon un fond animé est généré.
+- **Textes et voix** : modifie les fonctions `jour1()`, `faux_millionnaires()`, `avant_apres()` dans `make_videos.py`.
