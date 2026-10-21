@@ -1,7 +1,7 @@
 # Procédure quotidienne (tâche planifiée)
 
 `publiees.txt` liste les histoires déjà mises en brouillon Metricool : `NNN-nom AAAA-MM-JJ` (date de publication prévue).
-Un seul brouillon à la fois : chaque jour on crée **uniquement** le brouillon du jour même (pas d'avance).
+Chaque jour on programme **uniquement** la vidéo du jour même (pas d'avance), publiée automatiquement.
 
 1. `git pull origin master`, puis `pip install -q edge-tts pillow numpy soundfile`.
 2. S'il reste moins de 5 histoires non publiées (`histoires/*.json` absentes de `publiees.txt`),
@@ -15,6 +15,5 @@ Un seul brouillon à la fois : chaque jour on crée **uniquement** le brouillon 
 6. Metricool `createScheduledPost` : blogId `7545702`, réseau `tiktok`, aujourd'hui à 18:30 Europe/Paris
    (offset +02:00 en heure d'été, +01:00 en hiver ; dans 15 min si 18:30 est passé), `text` = `legende`, `media` = [URL raw],
    `tiktokData` = {"privacyOption": "PUBLIC_TO_EVERYONE", "isAigc": true, "title": titre}, `autoPublish` true,
-   **`draft` true** : le post reste en brouillon dans Metricool, l'utilisateur le relit et le valide avant publication.
-   Donner le lien `plannerUrl` du brouillon dans le compte rendu.
+   `draft` false : publication directe, sans validation. Donner le lien `plannerUrl` dans le compte rendu.
 7. Ajouter `NNN-nom AAAA-MM-JJ` à `publiees.txt`, commit + push.
