@@ -11,5 +11,7 @@
    répond 200 (le dépôt doit être public).
 6. Metricool `createScheduledPost` : blogId `7545702`, réseau `tiktok`, aujourd'hui à 18:30 Europe/Paris
    (ou dans 15 min si 18:30 est passé), `text` = `legende`, `media` = [URL raw],
-   `tiktokData` = {"privacyOption": "PUBLIC_TO_EVERYONE", "isAigc": true, "title": titre}, `autoPublish` true.
+   `tiktokData` = {"privacyOption": "PUBLIC_TO_EVERYONE", "isAigc": true, "title": titre}, `autoPublish` true,
+   **`draft` true** : le post reste en brouillon dans Metricool, l'utilisateur le relit et le valide avant publication.
+   Donner le lien `plannerUrl` du brouillon dans le compte rendu.
 7. Ajouter `NNN-nom` à `publiees.txt`, commit + push.
