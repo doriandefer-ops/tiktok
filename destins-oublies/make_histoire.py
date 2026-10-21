@@ -28,6 +28,8 @@ import numpy as np
 import soundfile as sf
 from PIL import Image, ImageEnhance, ImageFilter, ImageOps
 
+import musique
+
 ROOT = Path(__file__).resolve().parent
 HIST, SORTIES, CACHE = ROOT / "histoires", ROOT / "sorties", ROOT / ".cache"
 PUBLIEES = ROOT / "publiees.txt"
@@ -206,9 +208,11 @@ def render(path):
         track = np.zeros(int(t * SR) + SR, dtype=np.float32)
         for s, a in audios:
             track[int(s * SR):int(s * SR) + len(a)] += a
+        track = track[:int(t * SR)]
         track *= 0.95 / max(1e-6, float(np.abs(track).max()))
+        track = musique.mixer(track, musique.piste(t, SR, seed=len(h["titre"])))
         wav = Path(tmp) / "voix.wav"
-        sf.write(wav, track[:int(t * SR)], SR)
+        sf.write(wav, track, SR)
         lst = Path(tmp) / "liste.txt"
         lst.write_text("".join(f"file '{c}'\nduration {d:.3f}\n" for c, d in clips))
         ass = Path(tmp) / "subs.ass"
@@ -217,9 +221,32 @@ def render(path):
                         "-i", wav, "-vf", f"subtitles={ass}:fontsdir=/usr/share/fonts",
                         "-map", "0:v", "-map", "1:a", "-t", f"{t:.2f}", "-r", str(FPS),
                         "-c:v", "libx264", "-preset", "medium", "-crf", "21", "-pix_fmt", "yuv420p",
-                        "-c:a", "aac", "-b:a", "160k", "-movflags", "+faststart", out], check=True)
+                        "-c:a", "aac", "-b:a", "160k", "-metadata", "comment=musique", "-movflags", "+faststart",
+                        out], check=True)
     print(f"OK {out} ({t:.1f} s)")
     return out
+
+
+def remix(mp4, seed):
+    """Ajoute la musique de fond à une vidéo déjà rendue (sans musique), vidéo copiée telle quelle."""
+    mp4 = Path(mp4)
+    tag = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format_tags=comment", "-of", "csv=p=0", mp4],
+                         capture_output=True, text=True).stdout.strip()
+    if tag == "musique":
+        print("déjà avec musique :", mp4)
+        return
+    with tempfile.TemporaryDirectory() as tmp:
+        wav, out = Path(tmp) / "v.wav", Path(tmp) / mp4.name
+        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", mp4, "-vn", "-ar", str(SR), "-ac", "1", wav],
+                       check=True)
+        voix_, _ = sf.read(wav, dtype="float32")
+        mix = musique.mixer(voix_, musique.piste(len(voix_) / SR, SR, seed=seed))
+        sf.write(wav, mix, SR)
+        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", mp4, "-i", wav, "-map", "0:v", "-map", "1:a",
+                        "-c:v", "copy", "-c:a", "aac", "-b:a", "160k", "-metadata", "comment=musique",
+                        "-movflags", "+faststart", out], check=True)
+        out.replace(mp4)
+    print("OK musique ajoutée :", mp4)
 
 
 def suivante():
@@ -234,5 +261,10 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("histoire", nargs="?")
     ap.add_argument("--suivante", action="store_true")
+    ap.add_argument("--remix", nargs="+", metavar="MP4", help="ajoute la musique à des vidéos déjà rendues")
     a = ap.parse_args()
+    if a.remix:
+        for f in a.remix:
+            remix(f, seed=len(Path(f).stem))
+        raise SystemExit
     render(suivante() if a.suivante or not a.histoire else a.histoire)
