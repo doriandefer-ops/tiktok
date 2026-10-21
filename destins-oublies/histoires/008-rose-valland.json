@@ -1,0 +1,46 @@
+{
+  "titre": "L'espionne du musée",
+  "legende": "Pendant 4 ans, elle a espionné les nazis en silence et sauvé des milliers d'œuvres d'art. Rose Valland. 🖼️ #histoire #destinsoublies #histoiredefrance #art #ww2 #femmesdelhistoire",
+  "segments": [
+    {
+      "voix": "Pendant quatre ans, cette femme discrète a espionné les nazis. Sans jamais se faire prendre.",
+      "ecran": "4 ANS",
+      "image": "Rose_Valland"
+    },
+    {
+      "voix": "Paris, 1940. Rose Valland est attachée de conservation au musée du Jeu de Paume.",
+      "ecran": "1940",
+      "image": "Galerie_nationale_du_Jeu_de_Paume"
+    },
+    {
+      "voix": "Les nazis transforment le musée en entrepôt. Ils y stockent les œuvres d'art volées aux familles juives et aux collectionneurs.",
+      "image": "Galerie_nationale_du_Jeu_de_Paume"
+    },
+    {
+      "voix": "Ils gardent Rose Valland sur place. Ils ignorent qu'elle comprend l'allemand.",
+      "ecran": "ELLE COMPREND",
+      "image": "Rose_Valland"
+    },
+    {
+      "voix": "Chaque jour, elle note en secret : le nom des œuvres, les convois, les destinations.",
+      "image": "Hermann_Göring"
+    },
+    {
+      "voix": "Elle transmet ses informations à la Résistance, pour éviter que les trains d'œuvres soient bombardés.",
+      "image": "French_Resistance"
+    },
+    {
+      "voix": "Après la guerre, grâce à ses carnets, des dizaines de milliers d'œuvres sont retrouvées et rendues.",
+      "ecran": "RETROUVÉES",
+      "image": "Neuschwanstein_Castle"
+    },
+    {
+      "voix": "Elle est devenue l'une des femmes les plus décorées de France. Et pourtant, presque personne ne la connaît.",
+      "image": "Rose_Valland"
+    },
+    {
+      "voix": "Abonne-toi : chaque jour, un destin que l'Histoire a oublié.",
+      "image": "Rose_Valland"
+    }
+  ]
+}

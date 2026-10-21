@@ -1,0 +1,47 @@
+{
+  "titre": "Le sous-marin de 1962",
+  "legende": "1962 : un sous-marin soviétique est à un vote d'une guerre nucléaire. Un seul homme dit non : Vassili Arkhipov. #histoire #destinsoublies #guerrefroide #cuba #histoirevraie",
+  "segments": [
+    {
+      "voix": "Octobre 1962. Le monde a été à une seule voix de la guerre nucléaire.",
+      "ecran": "1 VOIX",
+      "image": "Vasily_Arkhipov"
+    },
+    {
+      "voix": "C'est la crise des missiles de Cuba. Un sous-marin soviétique, le B-59, est traqué par la marine américaine.",
+      "ecran": "CUBA",
+      "image": "Cuban_Missile_Crisis"
+    },
+    {
+      "voix": "À bord, une torpille nucléaire. Plus aucun contact avec Moscou. La chaleur est insupportable.",
+      "image": "Soviet_submarine_B-59"
+    },
+    {
+      "voix": "Les Américains larguent des grenades pour le forcer à remonter. L'équipage croit que la guerre a commencé.",
+      "image": "USS_Beale_(DD-471)"
+    },
+    {
+      "voix": "Le capitaine veut tirer la torpille. Pour cela, il faut l'accord des trois officiers supérieurs.",
+      "ecran": "3 VOTES",
+      "image": "Soviet_submarine_B-59"
+    },
+    {
+      "voix": "Deux disent oui. Le troisième, Vassili Arkhipov, refuse.",
+      "ecran": "NON",
+      "image": "Vasily_Arkhipov"
+    },
+    {
+      "voix": "Il convainc le capitaine de faire surface. Le sous-marin remonte, et repart vers l'URSS.",
+      "image": "Foxtrot-class_submarine"
+    },
+    {
+      "voix": "Cette histoire est restée secrète pendant quarante ans.",
+      "ecran": "40 ANS",
+      "image": "Vasily_Arkhipov"
+    },
+    {
+      "voix": "Abonne-toi pour un nouveau destin oublié chaque jour.",
+      "image": "Cuban_Missile_Crisis"
+    }
+  ]
+}

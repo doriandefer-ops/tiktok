@@ -1,0 +1,46 @@
+{
+  "titre": "L'homme qui a dit non",
+  "legende": "En 1983, un ordinateur lui annonce une attaque nucléaire. Il décide de ne pas y croire. Stanislav Petrov a peut-être sauvé le monde. ☢️ #histoire #destinsoublies #guerrefroide #histoirevraie #urss",
+  "segments": [
+    {
+      "voix": "Vingt-six septembre 1983. Un homme a peut-être évité la troisième guerre mondiale. Et presque personne ne connaît son nom.",
+      "ecran": "1983",
+      "image": "Stanislav_Petrov"
+    },
+    {
+      "voix": "Stanislav Petrov est officier soviétique. Cette nuit-là, il surveille le système d'alerte antimissile, près de Moscou.",
+      "image": "Serpukhov-15"
+    },
+    {
+      "voix": "Soudain, l'alarme hurle. Sur l'écran : un missile américain se dirige vers l'URSS. Puis deux. Puis cinq.",
+      "ecran": "5 MISSILES",
+      "image": "LGM-30_Minuteman"
+    },
+    {
+      "voix": "La procédure est claire : prévenir sa hiérarchie, qui peut décider d'une riposte nucléaire.",
+      "image": "Oko"
+    },
+    {
+      "voix": "Mais Petrov hésite. Pourquoi les Américains n'enverraient que cinq missiles pour commencer une guerre ?",
+      "ecran": "SEULEMENT 5 ?",
+      "image": "Stanislav_Petrov"
+    },
+    {
+      "voix": "Il prend une décision folle : il signale une fausse alerte. Et il attend.",
+      "ecran": "FAUSSE ALERTE",
+      "image": "Stanislav_Petrov"
+    },
+    {
+      "voix": "Les minutes passent. Aucun missile ne tombe. Le satellite avait confondu le reflet du soleil sur les nuages avec des tirs.",
+      "image": "Cloud"
+    },
+    {
+      "voix": "Petrov ne reçoit aucune médaille. Son histoire reste secrète jusque dans les années quatre-vingt-dix.",
+      "image": "Stanislav_Petrov"
+    },
+    {
+      "voix": "Abonne-toi : chaque jour, un destin que l'Histoire a oublié.",
+      "image": "Moscow"
+    }
+  ]
+}

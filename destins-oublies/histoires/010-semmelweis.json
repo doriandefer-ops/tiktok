@@ -1,0 +1,48 @@
+{
+  "titre": "Le médecin qu'on a pris pour un fou",
+  "legende": "Il a découvert qu'il fallait se laver les mains. On l'a enfermé. L'histoire tragique d'Ignace Semmelweis. 🧼 #histoire #destinsoublies #medecine #histoirevraie #science",
+  "segments": [
+    {
+      "voix": "Il a découvert qu'il fallait se laver les mains. Et on l'a traité de fou.",
+      "ecran": "LAVEZ-VOUS LES MAINS",
+      "image": "Ignaz_Semmelweis"
+    },
+    {
+      "voix": "Vienne, 1846. Ignace Semmelweis est médecin à la maternité. Les jeunes mères meurent en masse d'une fièvre.",
+      "ecran": "1846",
+      "image": "Vienna_General_Hospital"
+    },
+    {
+      "voix": "Il remarque un détail terrifiant : dans le service des médecins, les mères meurent beaucoup plus que dans celui des sages-femmes.",
+      "image": "Ignaz_Semmelweis"
+    },
+    {
+      "voix": "La différence ? Les médecins viennent souvent d'autopsier des cadavres. Sans se laver les mains.",
+      "ecran": "LES CADAVRES",
+      "image": "Vienna_General_Hospital"
+    },
+    {
+      "voix": "Il impose un lavage des mains au chlore. La mortalité s'effondre.",
+      "ecran": "MORTALITÉ EN CHUTE",
+      "image": "Ignaz_Semmelweis"
+    },
+    {
+      "voix": "Mais ses confrères sont vexés. Un médecin, responsable de la mort de ses patientes ? Impossible.",
+      "image": "Ignaz_Semmelweis"
+    },
+    {
+      "voix": "On le moque, on le rejette. Il sombre. En 1865, il est interné dans un asile, et meurt deux semaines plus tard.",
+      "ecran": "1865",
+      "image": "Ignaz_Semmelweis"
+    },
+    {
+      "voix": "Quelques années après, Pasteur prouvera l'existence des microbes. Semmelweis avait raison.",
+      "ecran": "IL AVAIT RAISON",
+      "image": "Louis_Pasteur"
+    },
+    {
+      "voix": "Abonne-toi : chaque jour, un destin que l'Histoire a oublié.",
+      "image": "Ignaz_Semmelweis"
+    }
+  ]
+}

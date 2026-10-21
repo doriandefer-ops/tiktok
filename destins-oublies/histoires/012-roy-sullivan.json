@@ -1,0 +1,47 @@
+{
+  "titre": "Sept fois foudroyé",
+  "legende": "La foudre l'a frappé 7 fois. Et il a survécu à chaque fois. Roy Sullivan, l'homme-paratonnerre. ⚡ #histoire #destinsoublies #insolite #histoirevraie #record",
+  "segments": [
+    {
+      "voix": "La foudre l'a frappé sept fois. Et il a survécu à chaque fois.",
+      "ecran": "7 FOIS",
+      "image": "Roy_Sullivan"
+    },
+    {
+      "voix": "Roy Sullivan est garde forestier dans le parc national de Shenandoah, aux États-Unis.",
+      "image": "Shenandoah_National_Park"
+    },
+    {
+      "voix": "1942 : premier éclair. Il perd l'ongle d'un gros orteil.",
+      "ecran": "1942",
+      "image": "Lightning"
+    },
+    {
+      "voix": "1969 : ses sourcils brûlent. 1970 : son épaule.",
+      "image": "Lightning"
+    },
+    {
+      "voix": "1972 : ses cheveux prennent feu. Depuis, il garde toujours un seau d'eau dans sa voiture.",
+      "ecran": "LE SEAU D'EAU",
+      "image": "Shenandoah_National_Park"
+    },
+    {
+      "voix": "Il se met à avoir peur des nuages. Les gens l'évitent pendant les orages.",
+      "image": "Thunderstorm"
+    },
+    {
+      "voix": "1973, 1976, 1977. La foudre le retrouve encore.",
+      "ecran": "1977",
+      "image": "Lightning"
+    },
+    {
+      "voix": "Il est entré au livre Guinness des records. Deux de ses chapeaux brûlés y sont exposés.",
+      "ecran": "RECORD",
+      "image": "Roy_Sullivan"
+    },
+    {
+      "voix": "Abonne-toi : chaque jour, un destin que l'Histoire a oublié.",
+      "image": "Shenandoah_National_Park"
+    }
+  ]
+}

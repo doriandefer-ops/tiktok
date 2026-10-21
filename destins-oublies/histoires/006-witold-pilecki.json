@@ -1,0 +1,47 @@
+{
+  "titre": "Volontaire pour Auschwitz",
+  "legende": "Il s'est laissé arrêter volontairement pour entrer à Auschwitz. Witold Pilecki, le héros que l'Histoire a failli effacer. #histoire #destinsoublies #ww2 #pologne #histoirevraie",
+  "segments": [
+    {
+      "voix": "Cet homme est entré volontairement à Auschwitz.",
+      "ecran": "VOLONTAIRE",
+      "image": "Witold_Pilecki"
+    },
+    {
+      "voix": "1940, Pologne occupée. Witold Pilecki est officier dans la résistance. On ignore encore ce qui se passe dans ce camp.",
+      "ecran": "1940",
+      "image": "Auschwitz_concentration_camp"
+    },
+    {
+      "voix": "Alors il propose un plan insensé : se faire arrêter, pour voir de l'intérieur.",
+      "image": "Witold_Pilecki"
+    },
+    {
+      "voix": "En septembre 1940, il se laisse prendre lors d'une rafle à Varsovie. Quelques jours plus tard, il est à Auschwitz.",
+      "image": "Warsaw"
+    },
+    {
+      "voix": "À l'intérieur, il organise un réseau de résistance clandestin et fait sortir des rapports vers Londres.",
+      "ecran": "RÉSISTANCE",
+      "image": "Auschwitz_concentration_camp"
+    },
+    {
+      "voix": "Deux ans et demi plus tard, en 1943, il s'évade.",
+      "ecran": "ÉVADÉ",
+      "image": "Witold_Pilecki"
+    },
+    {
+      "voix": "Il combat ensuite pendant l'insurrection de Varsovie, en 1944.",
+      "ecran": "1944",
+      "image": "Warsaw_Uprising"
+    },
+    {
+      "voix": "Après la guerre, le régime communiste l'arrête, le condamne, et l'exécute en 1948. Son nom est effacé pendant des décennies.",
+      "image": "Witold_Pilecki"
+    },
+    {
+      "voix": "Abonne-toi : chaque jour, un destin que l'Histoire a oublié.",
+      "image": "Witold_Pilecki"
+    }
+  ]
+}

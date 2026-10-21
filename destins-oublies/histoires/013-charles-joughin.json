@@ -1,0 +1,44 @@
+{
+  "titre": "Le boulanger du Titanic",
+  "legende": "Il a survécu au Titanic dans l'eau glacée… grâce au whisky, selon lui. Charles Joughin, le boulanger. 🥃 #histoire #destinsoublies #titanic #histoirevraie #insolite",
+  "segments": [
+    {
+      "voix": "Il a survécu des heures dans l'eau glacée du Titanic. Et selon lui, c'est grâce au whisky.",
+      "ecran": "LE WHISKY",
+      "image": "Charles_Joughin"
+    },
+    {
+      "voix": "Charles Joughin est le chef boulanger du Titanic.",
+      "image": "Titanic"
+    },
+    {
+      "voix": "Quand le navire heurte l'iceberg, il envoie du pain dans les canots. Puis il aide les femmes et les enfants à embarquer.",
+      "image": "Sinking_of_the_Titanic"
+    },
+    {
+      "voix": "Il retourne dans sa cabine… et boit du whisky.",
+      "image": "Charles_Joughin"
+    },
+    {
+      "voix": "Il jette des chaises longues par-dessus bord, pour que les gens puissent s'y accrocher.",
+      "image": "Titanic"
+    },
+    {
+      "voix": "Quand la poupe s'enfonce, il est accroché au bastingage. Il raconte être descendu avec le navire, presque sans se mouiller la tête.",
+      "image": "Sinking_of_the_Titanic"
+    },
+    {
+      "voix": "Il nage dans une eau proche de zéro degré, pendant des heures, avant d'être hissé près d'un canot.",
+      "ecran": "0 °C",
+      "image": "RMS_Carpathia"
+    },
+    {
+      "voix": "Les médecins diront que l'alcool aurait plutôt dû le tuer. Mais Joughin, lui, a survécu. Il est mort en 1956.",
+      "image": "Charles_Joughin"
+    },
+    {
+      "voix": "Abonne-toi pour un nouveau destin oublié chaque jour.",
+      "image": "Titanic"
+    }
+  ]
+}

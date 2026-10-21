@@ -1,0 +1,48 @@
+{
+  "titre": "Tombée du ciel",
+  "legende": "Elle a chuté de 3 000 mètres dans la jungle amazonienne. Et elle a marché 11 jours pour s'en sortir. L'histoire de Juliane Koepcke. 🌿 #histoire #destinsoublies #survie #histoirevraie #amazonie",
+  "segments": [
+    {
+      "voix": "Elle a fait une chute de trois kilomètres. Et elle a survécu.",
+      "ecran": "3 000 M",
+      "image": "Juliane_Koepcke"
+    },
+    {
+      "voix": "Vingt-quatre décembre 1971, Pérou. Juliane, dix-sept ans, prend l'avion avec sa mère pour fêter Noël avec son père.",
+      "ecran": "17 ANS",
+      "image": "LANSA_Flight_508"
+    },
+    {
+      "voix": "Au-dessus de la forêt amazonienne, l'avion entre dans un orage. La foudre frappe une aile. L'appareil se désintègre en plein ciel.",
+      "image": "Lockheed_L-188_Electra"
+    },
+    {
+      "voix": "Juliane tombe, toujours attachée à son siège. Elle se réveille au sol, au milieu de la jungle. Seule.",
+      "ecran": "SEULE",
+      "image": "Amazon_rainforest"
+    },
+    {
+      "voix": "Clavicule cassée, un œil gonflé, une seule sandale. Mais son père, biologiste, lui a appris une chose : suivre l'eau.",
+      "ecran": "SUIVRE L'EAU",
+      "image": "Amazon_rainforest"
+    },
+    {
+      "voix": "Alors elle suit un ruisseau, puis une rivière. Pendant onze jours. Ses plaies s'infectent, les insectes la dévorent.",
+      "ecran": "11 JOURS",
+      "image": "Amazon_River"
+    },
+    {
+      "voix": "Au bout de dix jours, elle trouve une cabane de bûcherons. Ils la découvrent le lendemain.",
+      "image": "Pucallpa"
+    },
+    {
+      "voix": "Elle est la seule survivante parmi plus de quatre-vingt-dix personnes. Elle deviendra biologiste, et protégera cette même forêt.",
+      "ecran": "SEULE SURVIVANTE",
+      "image": "Juliane_Koepcke"
+    },
+    {
+      "voix": "Abonne-toi pour un nouveau destin oublié chaque jour.",
+      "image": "Amazon_rainforest"
+    }
+  ]
+}

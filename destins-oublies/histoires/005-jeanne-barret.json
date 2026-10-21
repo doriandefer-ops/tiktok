@@ -1,0 +1,47 @@
+{
+  "titre": "La femme déguisée en homme",
+  "legende": "Pour faire le tour du monde, elle s'est fait passer pour un homme. Jeanne Barret, première femme à avoir fait le tour du globe. 🌍 #histoire #destinsoublies #histoiredefrance #femmesdelhistoire #histoirevraie",
+  "segments": [
+    {
+      "voix": "Au dix-huitième siècle, les femmes sont interdites sur les navires de la Marine royale. Elle a quand même fait le tour du monde.",
+      "ecran": "INTERDITE",
+      "image": "Jeanne_Baret"
+    },
+    {
+      "voix": "Jeanne Barret est née en Bourgogne, en 1740, dans une famille pauvre. Elle connaît les plantes mieux que personne.",
+      "ecran": "1740",
+      "image": "fr:Bourgogne"
+    },
+    {
+      "voix": "Elle travaille pour le botaniste Philibert Commerson, choisi pour l'expédition de Bougainville autour du monde.",
+      "image": "Philibert_Commerson"
+    },
+    {
+      "voix": "Alors elle coupe ses cheveux, bande sa poitrine, et embarque sous le nom de Jean. Son assistant.",
+      "ecran": "JEAN",
+      "image": "Louis_Antoine_de_Bougainville"
+    },
+    {
+      "voix": "Pendant des mois, elle porte les caisses, escalade les montagnes, collecte des milliers de plantes.",
+      "image": "Bougainvillea"
+    },
+    {
+      "voix": "Son secret est découvert pendant le voyage. Mais elle continue l'expédition.",
+      "ecran": "DÉMASQUÉE",
+      "image": "La_Boudeuse_(1766)"
+    },
+    {
+      "voix": "Elle rentre en France des années plus tard. Elle est la première femme connue à avoir fait le tour du monde.",
+      "ecran": "1RE FEMME",
+      "image": "Jeanne_Baret"
+    },
+    {
+      "voix": "Le roi Louis seize finira par lui accorder une pension, pour son courage.",
+      "image": "Louis_XVI"
+    },
+    {
+      "voix": "Abonne-toi pour découvrir un destin oublié chaque jour.",
+      "image": "Jeanne_Baret"
+    }
+  ]
+}

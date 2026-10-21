@@ -1,0 +1,49 @@
+{
+  "titre": "Le pilote oublié",
+  "legende": "Premier pilote militaire afro-américain… et il s'est battu pour la France. L'incroyable destin d'Eugène Bullard. ✈️ #histoire #destinsoublies #histoiredefrance #ww1 #histoirevraie",
+  "segments": [
+    {
+      "voix": "Le premier pilote de chasse afro-américain s'est battu… pour la France.",
+      "ecran": "POUR LA FRANCE",
+      "image": "Eugene_Bullard"
+    },
+    {
+      "voix": "Eugène Bullard naît en Géorgie, aux États-Unis, en 1895. Il fuit le racisme et traverse l'océan, clandestin sur un navire.",
+      "ecran": "1895",
+      "image": "Eugene_Bullard"
+    },
+    {
+      "voix": "Il arrive en France. Il devient boxeur. Puis la guerre éclate.",
+      "image": "Paris"
+    },
+    {
+      "voix": "Il s'engage dans la Légion étrangère et combat à Verdun, où il est grièvement blessé.",
+      "ecran": "VERDUN",
+      "image": "Battle_of_Verdun"
+    },
+    {
+      "voix": "Alors il demande à devenir pilote. Et il le devient, en 1917.",
+      "ecran": "PILOTE",
+      "image": "Lafayette_Escadrille"
+    },
+    {
+      "voix": "Quand l'Amérique entre en guerre, son pays refuse de le prendre comme pilote. À cause de sa couleur de peau.",
+      "ecran": "REFUSÉ",
+      "image": "Eugene_Bullard"
+    },
+    {
+      "voix": "En 1940, il combat encore pour la France, avant de fuir vers New York.",
+      "ecran": "1940",
+      "image": "Paris"
+    },
+    {
+      "voix": "Là-bas, il finit liftier, au Rockefeller Center. Personne ne sait qui il est.",
+      "ecran": "LIFTIER",
+      "image": "Rockefeller_Center"
+    },
+    {
+      "voix": "En 1959, la France le fait chevalier de la Légion d'honneur. Abonne-toi pour un destin oublié chaque jour.",
+      "image": "Eugene_Bullard"
+    }
+  ]
+}
