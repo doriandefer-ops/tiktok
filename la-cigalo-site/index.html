@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La Cigalo — L'Esprit du Sud</title>
+<meta name="description" content="La Cigalo : sweats, crewnecks et t-shirts 100 % coton inspirés par le Sud. Pour toute la famille.">
+<meta property="og:title" content="La Cigalo — L'Esprit du Sud">
+<meta property="og:description" content="Plus qu'un vêtement… une identité. Sweats et t-shirts 100 % coton pour toute la famille.">
+<meta property="og:image" content="images/affiche.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=Permanent+Marker&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --noir:#141110; --noir-2:#1f1a17; --creme:#f4ead8; --creme-2:#e9dcc3;
+  --ocre:#c8782f; --ocre-clair:#e9a35a; --olive:#6f7442; --texte:#2a221d; --gris:#8b8075;
+  --rayon:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Inter,system-ui,sans-serif;background:var(--creme);color:var(--texte);line-height:1.6}
+img{max-width:100%;display:block}
+a{color:inherit}
+.wrap{width:min(1160px,100% - 32px);margin-inline:auto}
+.main-titre{font-family:"Playfair Display",serif}
+.pinceau{font-family:"Permanent Marker",cursive;letter-spacing:.02em}
+.main{font-family:Caveat,cursive}
+
+/* En-tête */
+header{position:sticky;top:0;z-index:50;background:rgba(20,17,16,.92);backdrop-filter:blur(8px);color:var(--creme)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:68px;gap:16px}
+.marque{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:"Playfair Display",serif;font-size:1.35rem}
+.marque svg{width:36px;height:36px}
+.liens{display:flex;gap:28px;list-style:none;font-size:.92rem}
+.liens a{text-decoration:none;opacity:.85}
+.liens a:hover{opacity:1;color:var(--ocre-clair)}
+.panier-btn{background:none;border:1px solid rgba(244,234,216,.35);color:var(--creme);border-radius:999px;padding:8px 16px;cursor:pointer;font:inherit;font-size:.9rem;display:flex;gap:8px;align-items:center}
+.panier-btn b{background:var(--ocre);color:#fff;border-radius:999px;min-width:22px;height:22px;display:inline-grid;place-items:center;font-size:.75rem}
+@media (max-width:760px){.liens{display:none}}
+
+/* Hero */
+.hero{position:relative;min-height:min(88vh,760px);display:grid;place-items:center;text-align:center;color:var(--creme);overflow:hidden;background:var(--noir)}
+.hero::before{content:"";position:absolute;inset:0;background:url(images/famille.jpg) center 30%/cover;opacity:.55;filter:saturate(1.1)}
+.hero::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(20,17,16,.25),rgba(20,17,16,.85) 75%)}
+.hero-inner{position:relative;z-index:1;padding:80px 0}
+.hero .logo{width:120px;height:120px;margin:0 auto 6px;color:var(--creme)}
+.hero h1{font-size:clamp(3rem,10vw,6.5rem);line-height:1;font-weight:700}
+.hero .slogan{font-size:clamp(2rem,6.5vw,4.2rem);transform:rotate(-3deg);margin:8px 0 18px;color:var(--creme);text-shadow:0 4px 18px rgba(0,0,0,.5)}
+.hero .accroche{font-size:clamp(1.5rem,4vw,2.1rem);color:var(--ocre-clair)}
+.hero p.sous{letter-spacing:.3em;text-transform:uppercase;font-size:.8rem;opacity:.85;margin:10px 0 30px}
+.btn{display:inline-block;background:var(--ocre);color:#fff;text-decoration:none;padding:14px 30px;border-radius:999px;font-weight:600;border:0;cursor:pointer;font:600 1rem Inter,sans-serif;transition:transform .15s,background .15s}
+.btn:hover{background:#b0661f;transform:translateY(-2px)}
+.btn.ghost{background:transparent;border:1px solid var(--creme);color:var(--creme);margin-left:10px}
+.btn.ghost:hover{background:rgba(244,234,216,.1)}
+
+/* Valeurs */
+.valeurs{background:var(--noir);color:var(--creme);padding:34px 0}
+.valeurs ul{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.valeurs li{display:flex;gap:12px;align-items:center;font-size:.82rem;letter-spacing:.12em;text-transform:uppercase}
+.valeurs svg{width:34px;height:34px;flex:none;color:var(--ocre-clair)}
+@media (max-width:760px){.valeurs ul{grid-template-columns:1fr 1fr}}
+
+/* Sections */
+section{padding:90px 0}
+.titre-sec{text-align:center;margin-bottom:48px}
+.titre-sec .main{font-size:1.7rem;color:var(--ocre)}
+.titre-sec h2{font-family:"Playfair Display",serif;font-size:clamp(2rem,5vw,3rem);line-height:1.1}
+.titre-sec p{color:var(--gris);max-width:560px;margin:12px auto 0}
+
+/* Collection */
+.grille{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:28px}
+.produit{background:#fff;border-radius:var(--rayon);overflow:hidden;box-shadow:0 10px 30px rgba(42,34,29,.08);display:flex;flex-direction:column}
+.produit .visuel{aspect-ratio:1;background:var(--creme-2);position:relative;overflow:hidden}
+.produit .visuel img{width:100%;height:100%;object-fit:cover;transition:opacity .35s}
+.produit .visuel img.verso{position:absolute;inset:0;opacity:0}
+.produit:hover .visuel img.verso{opacity:1}
+.produit .tag{position:absolute;top:12px;left:12px;background:var(--noir);color:var(--creme);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;padding:5px 10px;border-radius:999px;z-index:1}
+.produit .info{padding:20px;display:flex;flex-direction:column;gap:12px;flex:1}
+.produit h3{font-family:"Playfair Display",serif;font-size:1.35rem}
+.produit .desc{color:var(--gris);font-size:.9rem}
+.ligne{display:flex;justify-content:space-between;align-items:center}
+.prix{font-weight:600;font-size:1.2rem}
+.tailles{display:flex;flex-wrap:wrap;gap:6px}
+.tailles button{border:1px solid #d8cbb4;background:none;border-radius:8px;padding:5px 10px;font:500 .8rem Inter,sans-serif;cursor:pointer}
+.tailles button.on{background:var(--noir);color:var(--creme);border-color:var(--noir)}
+.tailles .groupe{font-size:.72rem;color:var(--gris);width:100%;text-transform:uppercase;letter-spacing:.1em;margin-top:4px}
+.produit .btn{width:100%;margin-top:auto;padding:12px}
+.alerte{font-size:.8rem;color:#b3421f;min-height:1em}
+
+/* Histoire */
+.histoire{background:var(--noir);color:var(--creme)}
+.histoire .wrap{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.histoire img{border-radius:var(--rayon);box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.histoire h2{font-family:"Playfair Display",serif;font-size:clamp(2rem,4.5vw,2.8rem);line-height:1.15;margin-bottom:20px}
+.histoire .main{font-size:1.8rem;color:var(--ocre-clair)}
+.histoire p{opacity:.85;margin-bottom:16px}
+.histoire .signature{font-family:Caveat,cursive;font-size:1.8rem;color:var(--ocre-clair);opacity:1}
+@media (max-width:860px){.histoire .wrap{grid-template-columns:1fr;gap:36px}}
+
+/* Famille */
+.famille .cartes{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.famille .carte{border:1px dashed #cdb998;border-radius:var(--rayon);padding:30px;text-align:center;background:rgba(255,255,255,.4)}
+.famille .carte .main{font-size:2rem;color:var(--ocre)}
+.famille .carte p{color:var(--gris);font-size:.92rem}
+@media (max-width:760px){.famille .cartes{grid-template-columns:1fr}}
+
+/* Instagram */
+.insta{background:var(--creme-2)}
+.insta .galerie{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.insta .galerie a{aspect-ratio:1;overflow:hidden;border-radius:10px;display:block}
+.insta .galerie img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.insta .galerie a:hover img{transform:scale(1.06)}
+.insta .cta{text-align:center;margin-top:34px}
+@media (max-width:760px){.insta .galerie{grid-template-columns:1fr 1fr}}
+
+/* Newsletter */
+.news{background:url(images/famille.jpg) center/cover;position:relative;color:var(--creme);text-align:center}
+.news::before{content:"";position:absolute;inset:0;background:rgba(20,17,16,.82)}
+.news .wrap{position:relative}
+.news h2{font-size:clamp(1.8rem,5vw,2.8rem);transform:rotate(-2deg)}
+.news form{display:flex;gap:10px;max-width:480px;margin:26px auto 0;flex-wrap:wrap}
+.news input{flex:1;min-width:200px;padding:14px 18px;border-radius:999px;border:0;font:inherit}
+.news .ok{margin-top:14px;color:var(--ocre-clair);min-height:1.6em}
+
+/* Pied */
+footer{background:var(--noir);color:var(--creme);padding:60px 0 30px;font-size:.9rem}
+footer .cols{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px}
+footer h4{font-size:.78rem;letter-spacing:.15em;text-transform:uppercase;color:var(--ocre-clair);margin-bottom:12px}
+footer ul{list-style:none;display:grid;gap:6px;opacity:.8}
+footer a{text-decoration:none}
+footer a:hover{color:var(--ocre-clair)}
+footer .bas{border-top:1px solid rgba(244,234,216,.12);margin-top:40px;padding-top:20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;opacity:.6;font-size:.8rem}
+@media (max-width:760px){footer .cols{grid-template-columns:1fr}}
+
+/* Panier */
+.voile{position:fixed;inset:0;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .25s;z-index:90}
+.voile.ouvert{opacity:1;pointer-events:auto}
+.tiroir{position:fixed;top:0;right:0;height:100%;width:min(420px,100%);background:var(--creme);z-index:100;transform:translateX(100%);transition:transform .3s;display:flex;flex-direction:column}
+.tiroir.ouvert{transform:none}
+.tiroir header{position:static;background:var(--noir);padding:20px;display:flex;justify-content:space-between;align-items:center}
+.tiroir header h3{font-family:"Playfair Display",serif;font-size:1.3rem}
+.fermer{background:none;border:0;color:var(--creme);font-size:1.8rem;cursor:pointer;line-height:1}
+.articles{flex:1;overflow:auto;padding:20px;display:grid;gap:14px;align-content:start}
+.article{display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:center;background:#fff;padding:10px;border-radius:10px}
+.article img{width:64px;height:64px;object-fit:cover;border-radius:8px}
+.article small{color:var(--gris)}
+.qte{display:flex;align-items:center;gap:6px}
+.qte button{width:26px;height:26px;border-radius:50%;border:1px solid #d8cbb4;background:none;cursor:pointer}
+.vide{color:var(--gris);text-align:center;padding:40px 0}
+.total{padding:20px;border-top:1px solid #e0d2b8;display:grid;gap:12px}
+.total .ligne{font-size:1.1rem;font-weight:600}
+.total .note{font-size:.78rem;color:var(--gris)}
+.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,120px);background:var(--noir);color:var(--creme);padding:12px 22px;border-radius:999px;z-index:120;transition:transform .3s;font-size:.9rem}
+.toast.vu{transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+
+<!-- Logo cigale (réutilisé partout) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="cigale" viewBox="0 0 100 100">
+    <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <!-- rayons du soleil -->
+      <path d="M50 4v10M30 9l4 9M70 9l-4 9M14 21l7 7M86 21l-7 7M5 38h10M95 38H85M22 13l5 8M78 13l-5 8"/>
+      <path d="M8 56h22M70 56h22M12 62h18M70 62h18M18 68h14M68 68h14" opacity=".7"/>
+    </g>
+    <!-- ailes -->
+    <path d="M45 34C34 40 26 58 30 78c2 8 9 8 12 1 3-9 5-28 5-41z" fill="currentColor" opacity=".25" stroke="currentColor" stroke-width="1.6"/>
+    <path d="M55 34c11 6 19 24 15 44-2 8-9 8-12 1-3-9-5-28-5-41z" fill="currentColor" opacity=".25" stroke="currentColor" stroke-width="1.6"/>
+    <path d="M44 44c-6 8-8 20-7 30M56 44c6 8 8 20 7 30" fill="none" stroke="currentColor" stroke-width="1"/>
+    <!-- tête et corps -->
+    <ellipse cx="50" cy="27" rx="9" ry="6" fill="currentColor"/>
+    <circle cx="42" cy="25" r="2.6" fill="currentColor"/><circle cx="58" cy="25" r="2.6" fill="currentColor"/>
+    <path d="M50 32c-7 0-9 8-8 20s4 26 8 30c4-4 7-18 8-30s-1-20-8-20z" fill="currentColor"/>
+    <path d="M44 50h12M44 57h12M45 64h10M46 71h8" stroke="#141110" stroke-width="1.4" opacity=".6"/>
+  </symbol>
+</svg>
+
+<header>
+  <nav class="wrap nav">
+    <a href="#" class="marque"><svg><use href="#cigale"/></svg>La Cigalo</a>
+    <ul class="liens">
+      <li><a href="#collection">Collection</a></li>
+      <li><a href="#histoire">Notre histoire</a></li>
+      <li><a href="#famille">Pour la famille</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="panier-btn" id="ouvrirPanier" aria-label="Ouvrir le panier">Panier <b id="compteur">0</b></button>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-inner wrap">
+    <svg class="logo"><use href="#cigale"/></svg>
+    <h1 class="main-titre">La Cigalo</h1>
+    <div class="slogan pinceau">L'Esprit du Sud</div>
+    <div class="accroche main">Plus qu'un vêtement… une identité ♡</div>
+    <p class="sous">100 % coton · Pour toute la famille</p>
+    <a href="#collection" class="btn">Découvrir la collection</a><a href="#histoire" class="btn ghost">Notre histoire</a>
+  </div>
+</section>
+
+<div class="valeurs">
+  <ul class="wrap">
+    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/></svg>Inspiré par le Sud</li>
+    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 21c0-9 5-15 15-17-1 10-7 15-15 17zM5 21l8-8"/></svg>Design authentique</li>
+    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 18l6-8 4 5 3-3 7 6M2 21h20"/></svg>Esprit libre</li>
+    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22V10M12 14c-3 0-6-2-6-6 3 0 6 2 6 6zM12 12c3 0 6-2 6-6-3 0-6 2-6 6zM12 9c-1.5-1-2-3-1-5 2 1 2 3 1 5z"/></svg>Pour toute la famille</li>
+  </ul>
+</div>
+
+<section id="collection">
+  <div class="wrap">
+    <div class="titre-sec">
+      <div class="main">L'hiver au corps, le Sud au cœur</div>
+      <h2>La collection</h2>
+      <p>Des pièces noires, sobres et chaleureuses, brodées de notre cigale. Survolez une pièce pour voir le dos.</p>
+    </div>
+    <div class="grille" id="grille"></div>
+  </div>
+</section>
+
+<section class="histoire" id="histoire">
+  <div class="wrap">
+    <img src="images/affiche.jpg" alt="Affiche La Cigalo — L'Esprit du Sud : une famille de dos portant les sweats La Cigalo face aux collines" loading="lazy">
+    <div>
+      <div class="main">Du Sud au quotidien</div>
+      <h2>Le chant de la cigale, cousu sur le cœur</h2>
+      <p>La Cigalo est née d'une envie simple : porter le Sud avec soi, même loin de chez soi. Les après-midis qui n'en finissent pas, les collines dorées, les oliviers, les chevaux dans les prés et ce chant de cigale qui annonce l'été.</p>
+      <p>Chaque pièce porte notre cigale sous un soleil levant : un symbole de liberté, de chaleur et de fierté. Des vêtements en coton, pensés pour durer et pour se transmettre — des parents aux enfants.</p>
+      <p class="signature">— Fièrement du Sud ♡</p>
+    </div>
+  </div>
+</section>
+
+<section class="famille" id="famille">
+  <div class="wrap">
+    <div class="titre-sec">
+      <div class="main">Assortis, du plus grand au plus petit</div>
+      <h2>Pour toute la famille</h2>
+    </div>
+    <div class="cartes">
+      <div class="carte"><div class="main">Adultes</div><p>Coupes unisexes du S au XXL, confortables et intemporelles.</p></div>
+      <div class="carte"><div class="main">Enfants</div><p>Du 4 au 14 ans, le même esprit dans une version mini.</p></div>
+      <div class="carte"><div class="main">100 % coton</div><p>Doux, chaud et respirant. Logo imprimé recto et verso.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="insta">
+  <div class="wrap">
+    <div class="titre-sec">
+      <div class="main">#LaCigalo #LespritDuSud #FiertéDuSud</div>
+      <h2>Rejoignez la famille</h2>
+      <p>Partagez vos photos en La Cigalo et identifiez-nous sur Instagram.</p>
+    </div>
+    <div class="galerie">
+      <a href="https://www.instagram.com/la.cigalo/" target="_blank" rel="noopener"><img src="images/logo-zoom.jpg" alt="Logo La Cigalo brodé" loading="lazy"></a>
+      <a href="https://www.instagram.com/la.cigalo/" target="_blank" rel="noopener"><img src="images/hoodie-verso.jpg" alt="Sweat à capuche, dos" loading="lazy"></a>
+      <a href="https://www.instagram.com/la.cigalo/" target="_blank" rel="noopener"><img src="images/famille.jpg" alt="Famille en La Cigalo" loading="lazy"></a>
+      <a href="https://www.instagram.com/la.cigalo/" target="_blank" rel="noopener"><img src="images/crew-verso.jpg" alt="Crewneck, dos" loading="lazy"></a>
+    </div>
+    <div class="cta"><a class="btn" href="https://www.instagram.com/la.cigalo/" target="_blank" rel="noopener">Suivre @la.cigalo</a></div>
+  </div>
+</section>
+
+<section class="news">
+  <div class="wrap">
+    <h2 class="pinceau">Le Sud dans votre boîte mail</h2>
+    <p>Nouveautés, éditions limitées et -10 % sur votre première commande.</p>
+    <form id="newsForm">
+      <input type="email" required placeholder="votre@email.fr" aria-label="Adresse email">
+      <button class="btn" type="submit">Je m'inscris</button>
+    </form>
+    <div class="ok" id="newsOk"></div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a href="#" class="marque" style="margin-bottom:12px"><svg style="color:var(--creme)"><use href="#cigale"/></svg>La Cigalo</a>
+        <p style="opacity:.75;max-width:340px">Vêtements 100 % coton inspirés par le Sud. Plus qu'un vêtement… une identité.</p>
+      </div>
+      <div>
+        <h4>Boutique</h4>
+        <ul><li><a href="#collection">Sweats à capuche</a></li><li><a href="#collection">Crewnecks</a></li><li><a href="#collection">T-shirts</a></li></ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="https://www.instagram.com/la.cigalo/" target="_blank" rel="noopener">Instagram @la.cigalo</a></li>
+          <li><a href="mailto:contact@lacigalo.fr">contact@lacigalo.fr</a></li>
+          <li>Livraison en France</li>
+        </ul>
+      </div>
+    </div>
+    <div class="bas"><span>© <span id="annee"></span> La Cigalo — L'Esprit du Sud</span><span>Mentions légales · CGV · Confidentialité</span></div>
+  </div>
+</footer>
+
+<div class="voile" id="voile"></div>
+<aside class="tiroir" id="tiroir" aria-label="Panier">
+  <header><h3>Votre panier</h3><button class="fermer" id="fermerPanier" aria-label="Fermer">×</button></header>
+  <div class="articles" id="articles"></div>
+  <div class="total">
+    <div class="ligne"><span>Total</span><span id="total">0 €</span></div>
+    <button class="btn" id="commander">Commander</button>
+    <p class="note">La commande s'envoie par email : nous vous recontactons pour le paiement et la livraison.</p>
+  </div>
+</aside>
+<div class="toast" id="toast"></div>
+
+<script>
+// ====== À personnaliser : produits, prix, email de commande ======
+const EMAIL_COMMANDES = "contact@lacigalo.fr";
+const TAILLES_ADULTE = ["S","M","L","XL","XXL"];
+const TAILLES_ENFANT = ["4 ans","6 ans","8 ans","10 ans","12 ans","14 ans"];
+const PRODUITS = [
+  { id:"hoodie", nom:"Sweat à capuche", tag:"Best-seller", prix:59, desc:"Petit logo cœur devant, grande cigale au dos. Molleton chaud, poche kangourou.", recto:"images/hoodie-recto.jpg", verso:"images/hoodie-verso.jpg", enfant:true },
+  { id:"crew", nom:"Sweat Crewneck", tag:"Nouveau", prix:49, desc:"Col rond, coupe droite. Logo discret devant, cigale au soleil levant au dos.", recto:"images/crew-recto.jpg", verso:"images/crew-verso.jpg", enfant:true },
+  { id:"tshirt", nom:"T-shirt 100 % Sud", tag:"Été", prix:29, desc:"Le classique en coton épais. Logo « La Cigalo — L'Esprit du Sud ».", recto:"images/logo-zoom.jpg", verso:"images/logo-zoom-2.jpg", enfant:true },
+];
+// ===================================================================
+
+const eur = n => n.toLocaleString("fr-FR",{style:"currency",currency:"EUR",maximumFractionDigits:0});
+let panier = [];
+try { panier = JSON.parse(localStorage.getItem("cigalo-panier")) || []; } catch(e) {}
+const sauver = () => { try { localStorage.setItem("cigalo-panier", JSON.stringify(panier)); } catch(e) {} };
+
+const grille = document.getElementById("grille");
+PRODUITS.forEach(p => {
+  const el = document.createElement("article");
+  el.className = "produit";
+  const boutons = l => l.map(t => `<button type="button" data-t="${t}">${t}</button>`).join("");
+  el.innerHTML = `
+    <div class="visuel"><span class="tag">${p.tag}</span>
+      <img src="${p.recto}" alt="${p.nom}, recto" loading="lazy"><img class="verso" src="${p.verso}" alt="${p.nom}, verso" loading="lazy"></div>
+    <div class="info">
+      <div class="ligne"><h3>${p.nom}</h3><span class="prix">${eur(p.prix)}</span></div>
+      <p class="desc">${p.desc}</p>
+      <div class="tailles"><span class="groupe">Adulte</span>${boutons(TAILLES_ADULTE)}
+        ${p.enfant ? `<span class="groupe">Enfant (-10 €)</span>${boutons(TAILLES_ENFANT)}` : ""}</div>
+      <div class="alerte"></div>
+      <button class="btn" type="button">Ajouter au panier</button>
+    </div>`;
+  let taille = null;
+  el.querySelectorAll(".tailles button").forEach(b => b.onclick = () => {
+    el.querySelectorAll(".tailles button").forEach(x => x.classList.remove("on"));
+    b.classList.add("on"); taille = b.dataset.t; el.querySelector(".alerte").textContent = "";
+  });
+  el.querySelector(".info > .btn").onclick = () => {
+    if (!taille) { el.querySelector(".alerte").textContent = "Choisissez une taille."; return; }
+    const prix = TAILLES_ENFANT.includes(taille) ? p.prix - 10 : p.prix;
+    const ex = panier.find(a => a.id === p.id && a.taille === taille);
+    ex ? ex.qte++ : panier.push({ id:p.id, nom:p.nom, img:p.recto, taille, prix, qte:1 });
+    sauver(); rendre(); toast(`${p.nom} (${taille}) ajouté au panier`);
+  };
+  grille.appendChild(el);
+});
+
+function rendre(){
+  const zone = document.getElementById("articles");
+  document.getElementById("compteur").textContent = panier.reduce((s,a)=>s+a.qte,0);
+  document.getElementById("total").textContent = eur(panier.reduce((s,a)=>s+a.qte*a.prix,0));
+  if (!panier.length) { zone.innerHTML = `<p class="vide">Votre panier est vide.<br>Le Sud vous attend ☀️</p>`; return; }
+  zone.innerHTML = panier.map((a,i)=>`
+    <div class="article"><img src="${a.img}" alt="">
+      <div><strong>${a.nom}</strong><br><small>Taille ${a.taille} · ${eur(a.prix)}</small></div>
+      <div class="qte"><button data-i="${i}" data-d="-1">−</button>${a.qte}<button data-i="${i}" data-d="1">+</button></div>
+    </div>`).join("");
+  zone.querySelectorAll(".qte button").forEach(b => b.onclick = () => {
+    const a = panier[b.dataset.i]; a.qte += +b.dataset.d;
+    if (a.qte <= 0) panier.splice(b.dataset.i,1);
+    sauver(); rendre();
+  });
+}
+
+const tiroir = document.getElementById("tiroir"), voile = document.getElementById("voile");
+const ouvrir = v => { tiroir.classList.toggle("ouvert",v); voile.classList.toggle("ouvert",v); };
+document.getElementById("ouvrirPanier").onclick = () => ouvrir(true);
+document.getElementById("fermerPanier").onclick = voile.onclick = () => ouvrir(false);
+document.addEventListener("keydown", e => e.key === "Escape" && ouvrir(false));
+
+document.getElementById("commander").onclick = () => {
+  if (!panier.length) { toast("Votre panier est vide"); return; }
+  const lignes = panier.map(a => `- ${a.qte} × ${a.nom} (taille ${a.taille}) : ${eur(a.qte*a.prix)}`).join("\n");
+  const total = eur(panier.reduce((s,a)=>s+a.qte*a.prix,0));
+  const corps = `Bonjour La Cigalo,\n\nJe souhaite commander :\n${lignes}\n\nTotal : ${total}\n\nNom :\nAdresse de livraison :\nTéléphone :\n`;
+  location.href = `mailto:${EMAIL_COMMANDES}?subject=${encodeURIComponent("Commande La Cigalo")}&body=${encodeURIComponent(corps)}`;
+};
+
+document.getElementById("newsForm").onsubmit = e => {
+  e.preventDefault();
+  document.getElementById("newsOk").textContent = "Merci ! Bienvenue dans la famille La Cigalo ♡";
+  e.target.reset();
+};
+
+let tt;
+function toast(msg){ const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("vu"); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove("vu"),2200); }
+document.getElementById("annee").textContent = new Date().getFullYear();
+rendre();
+</script>
+</body>
+</html>
