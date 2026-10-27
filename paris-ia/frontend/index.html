@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paris IA — probabilités football</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="/">Paris<span>IA</span></a>
+  <nav>
+    <a href="#matchs">Matchs</a>
+    <a href="#bilan">Bilan</a>
+    <a href="#offres">Offres</a>
+  </nav>
+  <div id="account"></div>
+</header>
+
+<main>
+  <section class="hero">
+    <h1>Les probabilités de chaque match, calculées par un modèle et vérifiées en public.</h1>
+    <p>10 championnats européens. Probabilités 1X2, buts, scores probables, écarts avec les cotes.
+       Chaque pronostic est archivé avant le match, et le bilan est affiché même quand il est négatif.</p>
+  </section>
+
+  <section id="matchs">
+    <div class="section-head">
+      <h2>Prochains matchs</h2>
+      <select id="league-filter"><option value="">Tous les championnats</option></select>
+    </div>
+    <p class="muted" id="generated"></p>
+    <div id="matches" class="grid"></div>
+  </section>
+
+  <section id="bilan">
+    <h2>Bilan vérifiable</h2>
+    <p class="muted">Backtest sans regard vers le futur : chaque semaine, le modèle est réentraîné sur le passé uniquement, puis comparé aux cotes moyennes du marché.</p>
+    <div id="stats" class="stats"></div>
+    <div id="chart"></div>
+    <h3>Derniers « value bets » signalés</h3>
+    <div class="table-wrap"><table id="picks"><thead><tr><th>Date</th><th>Match</th><th>Choix</th><th>Cote</th><th>Proba</th><th>Score</th><th>Résultat</th></tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section id="offres">
+    <h2>Offres</h2>
+    <div class="plans">
+      <div class="plan">
+        <h3>Gratuit</h3><p class="price">0 €</p>
+        <ul><li>Probabilités 1X2 de tous les matchs</li><li>Bilan public</li></ul>
+      </div>
+      <div class="plan featured">
+        <h3>Premium</h3><p class="price">19,99 €<small>/mois</small></p>
+        <ul><li>Tous les marchés : buts, BTTS, scores</li><li>Écarts modèle / cotes</li><li>Buts attendus par équipe</li></ul>
+        <button data-plan="premium">Choisir Premium</button>
+      </div>
+      <div class="plan">
+        <h3>Pro</h3><p class="price">39,99 €<small>/mois</small></p>
+        <ul><li>Tout Premium</li><li>Historique complet de chaque pronostic</li><li>Alertes et export (à venir)</li></ul>
+        <button data-plan="pro">Choisir Pro</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<dialog id="auth">
+  <form id="auth-form" method="dialog">
+    <h3 id="auth-title">Créer un compte</h3>
+    <label>Email <input name="email" type="email" required></label>
+    <label>Mot de passe <input name="password" type="password" minlength="8" required></label>
+    <label class="check" id="adult-row"><input name="adult" type="checkbox"> J'ai 18 ans ou plus</label>
+    <p class="error" id="auth-error"></p>
+    <div class="row">
+      <button type="submit">Valider</button>
+      <button type="button" class="link" id="auth-switch">J'ai déjà un compte</button>
+    </div>
+  </form>
+</dialog>
+
+<footer>
+  <p><strong>Jouer comporte des risques : endettement, isolement, dépendance.</strong> Pour être aidé, appelez le 09 74 75 13 13 (appel non surtaxé). Interdit aux moins de 18 ans.</p>
+  <p>Les probabilités affichées sont des estimations statistiques. Elles ne garantissent aucun gain. Paris IA n'est pas un opérateur de paris.</p>
+</footer>
+<script src="/static/app.js"></script>
+</body>
+</html>
