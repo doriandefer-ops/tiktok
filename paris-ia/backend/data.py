@@ -63,7 +63,7 @@ def results() -> pd.DataFrame:
     df = df.dropna(subset=["Date", "FTHG", "FTAG"])
     df["FTHG"] = df["FTHG"].astype(int)
     df["FTAG"] = df["FTAG"].astype(int)
-    keep = ["Div", "Season", "Date", "HomeTeam", "AwayTeam", "FTHG", "FTAG", "FTR"] + ODDS
+    keep = ["Div", "Season", "Date", "HomeTeam", "AwayTeam", "FTHG", "FTAG", "FTR", "HST", "AST"] + ODDS
     return df[keep].sort_values("Date").reset_index(drop=True)
 
 

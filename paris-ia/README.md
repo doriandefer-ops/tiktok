@@ -33,11 +33,28 @@ Créer deux prix récurrents (19,99 € et 39,99 €/mois) puis définir :
 `STRIPE_SECRET_KEY`, `STRIPE_PRICE_PREMIUM`, `STRIPE_PRICE_PRO`, `STRIPE_WEBHOOK_SECRET`, `APP_SECRET`, `SITE_URL`.
 Webhook à pointer sur `/api/stripe/webhook` (événements `checkout.session.completed`, `customer.subscription.deleted`).
 
-## Résultat du backtest (3 987 matchs depuis août 2025)
+## Résultat du backtest
 
-Le modèle seul est moins précis que les cotes (log-loss 0,998 contre 0,969 à la clôture) et ses
-« value bets » perdent 18 % en mise fixe. À améliorer avant tout lancement payant : xG, compositions,
-blessés, suivi du CLV.
+Réglages choisis sur la saison 2025-26, vérifiés sur 786 matchs de 2026-27 jamais vus (log-loss 1X2, plus bas = mieux) :
+
+| Modèle | Log-loss |
+| --- | --- |
+| v1 : buts seuls | 1,008 |
+| v2 : buts 30 % + tirs cadrés 70 % (`SHOTS = 0.7`) | 0,977 |
+| Marché à l'ouverture (cotes moyennes) | 0,961 |
+| Marché à la clôture | 0,956 |
+
+Le modèle reste moins précis que le marché. Quand il s'en écarte nettement, c'est lui qui se trompe
+(il surestime les outsiders), et aucune des 54 règles de sélection testées n'est rentable sur les deux périodes.
+Le site publie donc 30 % modèle + 70 % marché sans marge, affiche les cotes justes et la marge des bookmakers,
+et garde les « écarts » dans une section Laboratoire, non recommandée. Pistes pour vraiment battre le marché :
+compositions et blessés, xG par tir, données de transferts.
+
+## Affichage
+
+Chaque issue est formulée en probabilité (« Le modèle estime à 57 % les chances d'une victoire de Galatasaray »),
+jamais comme un pari à jouer. Cette formulation ne suffit pas seule à rendre le site légal : le discours
+commercial ne doit pas non plus laisser croire que le service augmente les chances de gagner.
 
 ## Limites du prototype
 

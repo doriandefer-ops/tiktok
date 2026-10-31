@@ -7,6 +7,7 @@ from scipy.optimize import minimize, minimize_scalar
 from scipy.stats import poisson
 
 XI = 0.0019     # décroissance temporelle par jour (demi-vie ~ 1 an)
+SHOTS = 0.7     # part des tirs cadrés dans la cible (réglée par backtest, voir README)
 L2 = 0.05       # régularisation : stabilise les promus et les équipes peu vues
 MAX_GOALS = 10
 
@@ -38,17 +39,26 @@ class Fit:
         return m / m.sum()
 
 
-def fit(matches: pd.DataFrame, as_of: pd.Timestamp) -> Fit:
-    """Ajuste le modèle sur les matchs joués avant `as_of`."""
+def fit(matches: pd.DataFrame, as_of: pd.Timestamp, shots: float = SHOTS, xi: float = XI) -> Fit:
+    """Ajuste le modèle sur les matchs joués avant `as_of`.
+
+    `shots` = part de la cible venant des tirs cadrés (buts attendus approchés) plutôt que des buts :
+    les tirs cadrés mesurent mieux le niveau réel, les buts dépendent beaucoup du hasard."""
     df = matches[matches["Date"] < as_of]
     teams = sorted(set(df["HomeTeam"]) | set(df["AwayTeam"]))
     idx = {t: i for i, t in enumerate(teams)}
     n = len(teams)
     h = df["HomeTeam"].map(idx).to_numpy()
     a = df["AwayTeam"].map(idx).to_numpy()
-    x = df["FTHG"].to_numpy(float)
-    y = df["FTAG"].to_numpy(float)
-    w = np.exp(-XI * (as_of - df["Date"]).dt.days.to_numpy(float))
+    gx = df["FTHG"].to_numpy(float)
+    gy = df["FTAG"].to_numpy(float)
+    w = np.exp(-xi * (as_of - df["Date"]).dt.days.to_numpy(float))
+    sx = df["HST"].to_numpy(float) if "HST" in df else np.full_like(gx, np.nan)
+    sy = df["AST"].to_numpy(float) if "AST" in df else np.full_like(gy, np.nan)
+    ok = ~(np.isnan(sx) | np.isnan(sy))
+    conv = (gx[ok].sum() + gy[ok].sum()) / max(sx[ok].sum() + sy[ok].sum(), 1)
+    x = np.where(ok, (1 - shots) * gx + shots * conv * np.nan_to_num(sx), gx)
+    y = np.where(ok, (1 - shots) * gy + shots * conv * np.nan_to_num(sy), gy)
 
     def nll(p):
         att, dfn, home = p[:n], p[n:2 * n], p[2 * n]
@@ -68,6 +78,7 @@ def fit(matches: pd.DataFrame, as_of: pd.Timestamp) -> Fit:
 
     lam = np.exp(home + att[h] + dfn[a])
     mu = np.exp(att[a] + dfn[h])
+    x, y = gx, gy  # la corrélation des petits scores s'estime sur les vrais scores
 
     def rho_nll(r):
         tau = np.ones_like(lam)

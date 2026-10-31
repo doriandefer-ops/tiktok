@@ -35,6 +35,8 @@ select { background: var(--panel); color: var(--text); border: 1px solid var(--l
 .extra { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; font-size: 13px; }
 .extra div { background: var(--bg); border-radius: 8px; padding: 6px 8px; }
 .extra b { display: block; font-size: 16px; }
+.estimate { margin: 10px 0 0; font-size: 14px; }
+.fair { margin-top: 10px; padding: 6px 10px; border-radius: 8px; background: var(--bg); font-size: 13px; }
 .value { margin-top: 10px; padding: 6px 10px; border-radius: 8px; background: rgba(63,185,80,.12); color: var(--accent); font-size: 13px; }
 .locked { margin-top: 12px; padding: 10px; border: 1px dashed var(--line); border-radius: 8px; color: var(--muted); font-size: 13px; text-align: center; }
 .locked a { color: var(--accent); }

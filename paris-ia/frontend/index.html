@@ -20,7 +20,7 @@
 <main>
   <section class="hero">
     <h1>Les probabilités de chaque match, calculées par un modèle et vérifiées en public.</h1>
-    <p>10 championnats européens. Probabilités 1X2, buts, scores probables, écarts avec les cotes.
+    <p>10 championnats européens. Probabilités 1X2, buts, scores probables, cotes justes sans la marge des bookmakers.
        Chaque pronostic est archivé avant le match, et le bilan est affiché même quand il est négatif.</p>
   </section>
 
@@ -34,12 +34,12 @@
   </section>
 
   <section id="bilan">
-    <h2>Bilan vérifiable</h2>
-    <p class="muted">Backtest sans regard vers le futur : chaque semaine, le modèle est réentraîné sur le passé uniquement, puis comparé aux cotes moyennes du marché.</p>
+    <h2>Bilan vérifiable : le modèle face au marché</h2>
+    <p class="muted">Backtest sans regard vers le futur : chaque semaine, le modèle est réentraîné sur le passé uniquement, puis comparé aux cotes moyennes du marché. Résultat actuel : le marché reste plus précis que le modèle seul (une erreur plus basse est meilleure), et les matchs où le modèle s'écarte nettement des cotes ne sont pas rentables. C'est pourquoi les probabilités publiées combinent le modèle (30 %) et le marché sans marge (70 %).</p>
     <div id="stats" class="stats"></div>
     <div id="chart"></div>
-    <h3>Derniers « value bets » signalés</h3>
-    <div class="table-wrap"><table id="picks"><thead><tr><th>Date</th><th>Match</th><th>Choix</th><th>Cote</th><th>Proba</th><th>Score</th><th>Résultat</th></tr></thead><tbody></tbody></table></div>
+    <h3>Laboratoire : derniers écarts entre le modèle et les cotes (non recommandés)</h3>
+    <div class="table-wrap"><table id="picks"><thead><tr><th>Date</th><th>Match</th><th>Issue étudiée</th><th>Probabilité du modèle</th><th>Cote</th><th>Score</th><th>Issue</th></tr></thead><tbody></tbody></table></div>
   </section>
 
   <section id="offres">
@@ -51,7 +51,7 @@
       </div>
       <div class="plan featured">
         <h3>Premium</h3><p class="price">19,99 €<small>/mois</small></p>
-        <ul><li>Tous les marchés : buts, BTTS, scores</li><li>Écarts modèle / cotes</li><li>Buts attendus par équipe</li></ul>
+        <ul><li>Tous les marchés : buts, BTTS, scores</li><li>Cotes justes sans marge bookmaker</li><li>Buts attendus par équipe</li></ul>
         <button data-plan="premium">Choisir Premium</button>
       </div>
       <div class="plan">
@@ -79,7 +79,7 @@
 
 <footer>
   <p><strong>Jouer comporte des risques : endettement, isolement, dépendance.</strong> Pour être aidé, appelez le 09 74 75 13 13 (appel non surtaxé). Interdit aux moins de 18 ans.</p>
-  <p>Les probabilités affichées sont des estimations statistiques. Elles ne garantissent aucun gain. Paris IA n'est pas un opérateur de paris.</p>
+  <p>Les probabilités affichées sont des estimations statistiques, pas des conseils de paris. Elles n'augmentent pas vos chances de gagner et ne garantissent aucun gain. Paris IA n'est pas un opérateur de paris.</p>
 </footer>
 <script src="/static/app.js"></script>
 </body>

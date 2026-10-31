@@ -1,6 +1,7 @@
 const $ = (s) => document.querySelector(s);
 const pct = (p) => `${Math.round(p * 100)} %`;
-const OUTCOME = { home: "Domicile", draw: "Nul", away: "Extérieur" };
+const outcomeLabel = (m, o) => (o === "draw" ? "un match nul" : `une victoire de ${o === "home" ? m.home : m.away}`);
+const fmtPct = (p) => `${(p * 100).toFixed(1).replace(".", ",")} %`;
 let me = { plan: "free" };
 let signupMode = true;
 
@@ -55,20 +56,24 @@ document.querySelectorAll("[data-plan]").forEach((b) => {
 
 function matchCard(m) {
   const p = m.probs;
+  const fav = ["home", "draw", "away"].reduce((a, b) => (p[b] > p[a] ? b : a));
   let html = `<div class="card">
     <div class="meta"><span>${m.league_name}</span><span>${m.date.split("-").reverse().join("/")} ${m.time || ""}</span></div>
     <div class="teams"><span>${m.home}</span><span>${m.away}</span></div>
     <div class="bar"><div class="h" style="flex:${p.home}">${pct(p.home)}</div><div class="d" style="flex:${p.draw}">${pct(p.draw)}</div><div class="a" style="flex:${p.away}">${pct(p.away)}</div></div>
-    <div class="legend"><span>Domicile</span><span>Nul</span><span>Extérieur</span></div>`;
+    <div class="legend"><span>Victoire ${m.home}</span><span>Nul</span><span>Victoire ${m.away}</span></div>
+    <p class="estimate">Le modèle estime à <b>${pct(p[fav])}</b> les chances d'${outcomeLabel(m, fav)}.</p>`;
   if (m.locked) {
-    html += `<div class="locked">Buts, scores probables et écarts avec les cotes : <a href="#offres">offre Premium</a></div>`;
+    html += `<div class="locked">Probabilités de buts, scores probables et comparaison avec les cotes : <a href="#offres">offre Premium</a></div>`;
   } else {
     html += `<div class="extra">
       <div>+2,5 buts<b>${pct(m.over25)}</b></div>
       <div>Les deux marquent<b>${pct(m.btts)}</b></div>
       <div>Buts attendus<b>${m.xg[0]} – ${m.xg[1]}</b></div></div>
       <p class="muted">Scores les plus probables : ${m.scores.map((s) => `${s.score} (${pct(s.p)})`).join(", ")}</p>`;
-    for (const v of m.value) html += `<div class="value">Écart favorable : ${OUTCOME[v.outcome]} à ${v.odds.toFixed(2)} (+${(v.edge * 100).toFixed(1)} % d'espérance estimée)</div>`;
+    const fair = (o) => m.fair_odds[o].toFixed(2).replace(".", ",");
+    html += `<div class="fair">Cotes justes, sans marge : ${m.home} <b>${fair("home")}</b> · Nul <b>${fair("draw")}</b> · ${m.away} <b>${fair("away")}</b></div>`;
+    if (m.margin != null) html += `<p class="muted">Marge moyenne prélevée par les bookmakers sur ce match : ${fmtPct(m.margin)}.</p>`;
   }
   return html + "</div>";
 }
@@ -111,15 +116,17 @@ async function loadTrackRecord() {
   const cls = (v) => (v < 0 ? "neg" : "pos");
   $("#stats").innerHTML = `
     <div class="stat"><span>Matchs analysés</span><b>${s.matches.toLocaleString("fr-FR")}</b></div>
-    <div class="stat"><span>Value bets signalés</span><b>${s.bets}</b></div>
-    <div class="stat"><span>Taux de réussite</span><b>${pct(s.hit_rate)}</b></div>
-    <div class="stat"><span>ROI (mise fixe)</span><b class="${cls(s.roi)}">${(s.roi * 100).toFixed(1)} %</b></div>
+    <div class="stat"><span>Erreur du modèle seul (log-loss)</span><b>${s.logloss.p_model.toFixed(3).replace(".", ",")}</b></div>
+    <div class="stat"><span>Erreur du marché à la clôture</span><b>${s.logloss.p_close.toFixed(3).replace(".", ",")}</b></div>
+    <div class="stat"><span>Écarts signalés</span><b>${s.bets}</b></div>
+    <div class="stat"><span>Écarts réalisés</span><b>${pct(s.hit_rate)}</b></div>
+    <div class="stat"><span>ROI théorique (mise fixe)</span><b class="${cls(s.roi)}">${(s.roi * 100).toFixed(1)} %</b></div>
     <div class="stat"><span>CLV moyen</span><b class="${cls(s.clv)}">${(s.clv * 100).toFixed(1)} %</b></div>`;
   $("#chart").innerHTML = chart(s.by_month);
   $("#picks tbody").innerHTML = picks.map((h) => `<tr>
     <td>${h.date.split("-").reverse().join("/")}</td><td>${h.home} – ${h.away}</td>
-    <td>${OUTCOME[h.pick.outcome]}</td><td>${h.pick.odds.toFixed(2)}</td><td>${pct(h.pick.p)}</td>
-    <td>${h.score}</td><td class="${h.pick.won ? "pos" : "neg"}">${h.pick.won ? "Gagné" : "Perdu"}</td></tr>`).join("");
+    <td>${h.pick.outcome === "draw" ? "Nul" : `Victoire ${h.pick.outcome === "home" ? h.home : h.away}`}</td><td>${pct(h.pick.p)}</td><td>${h.pick.odds.toFixed(2)}</td>
+    <td>${h.score}</td><td class="${h.pick.won ? "pos" : "neg"}">${h.pick.won ? "Réalisé" : "Non réalisé"}</td></tr>`).join("");
 }
 
 (async () => {

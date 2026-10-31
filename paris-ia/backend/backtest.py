@@ -12,8 +12,8 @@ import model
 
 OUT = pathlib.Path(__file__).resolve().parent.parent / "data"
 START = pd.Timestamp("2025-08-01")
-EDGE = 0.05          # value minimale exigée : p_modèle × cote − 1
-BLEND = 0.35         # poids du modèle dans la probabilité publiée (le reste = marché)
+EDGE = 0.10          # écart minimal signalé : probabilité × cote moyenne − 1
+BLEND = 0.30         # poids du modèle dans la probabilité publiée (le reste = marché)
 OUTCOMES = [("home", "H"), ("draw", "D"), ("away", "A")]
 
 
@@ -51,9 +51,7 @@ def run(leagues=None) -> dict:
             g, mk = r["g"], r["mk"]
             p_model = np.array([mk["home"], mk["draw"], mk["away"]])
             p_open = implied(g, ["AvgH", "AvgD", "AvgA"])
-            p_close = implied(g, ["PSCH", "PSCD", "PSCA"])
-            if p_close is None:
-                p_close = implied(g, ["AvgCH", "AvgCD", "AvgCA"])
+            p_close = implied(g, ["AvgCH", "AvgCD", "AvgCA"])
             p_pub = blend(p_model, p_open)
             pick = None
             for k, (name, res) in enumerate(OUTCOMES):
@@ -62,7 +60,7 @@ def run(leagues=None) -> dict:
                     if pick is None or p_pub[k] * odd > pick["ev"]:
                         pick = {"outcome": name, "odds": float(odd), "p": float(p_pub[k]),
                                 "ev": float(p_pub[k] * odd), "won": g["FTR"] == res,
-                                "close": float(g[f"PSC{res}"]) if not np.isnan(g[f"PSC{res}"]) else None}
+                                "close": float(g[f"AvgC{res}"]) if not np.isnan(g[f"AvgC{res}"]) else None}
             records.append({
                 "league": code, "date": g["Date"].strftime("%Y-%m-%d"),
                 "home": g["HomeTeam"], "away": g["AwayTeam"],

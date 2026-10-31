@@ -28,7 +28,7 @@ def run(download: bool = True) -> list:
             p_pub = backtest.blend(p_model, p_open)
             value = []
             for k, (name, res) in enumerate(backtest.OUTCOMES):
-                odd = g.get(f"Max{res}")
+                odd = g.get(f"Avg{res}")
                 if odd and not np.isnan(odd):
                     ev = p_pub[k] * odd - 1
                     if ev >= backtest.EDGE:
@@ -38,6 +38,10 @@ def run(download: bool = True) -> list:
                 "date": g["Date"].strftime("%Y-%m-%d"), "time": g.get("Time", ""),
                 "home": g["HomeTeam"], "away": g["AwayTeam"],
                 "probs": {"home": float(p_pub[0]), "draw": float(p_pub[1]), "away": float(p_pub[2])},
+                "fair_odds": {k: round(1 / float(v), 2) for k, v in zip(["home", "draw", "away"], p_pub)},
+                "avg_odds": {k: float(g[f"Avg{r}"]) for k, r in [("home", "H"), ("draw", "D"), ("away", "A")]
+                             if not np.isnan(g[f"Avg{r}"])},
+                "margin": None if p_open is None else round(float(sum(1 / g[f"Avg{r}"] for r in "HDA") - 1), 4),
                 "model": {k: mk[k] for k in ["home", "draw", "away"]},
                 "market": None if p_open is None else dict(zip(["home", "draw", "away"], p_open.tolist())),
                 "over25": mk["over25"], "btts": mk["btts"],
