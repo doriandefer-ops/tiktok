@@ -5,3 +5,5 @@ STOP
 __pycache__/
 *.pyc
 .venv/
+scalp_state.json
+data/

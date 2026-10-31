@@ -22,11 +22,11 @@ from .config import load_config
 from .strategy import add_indicators, min_candles
 
 COST = 0.0045  # 0,4 % de frais Kraken (ordre au marché) + 0,05 % de glissement
-ARCHIVE = "https://data.binance.vision/data/spot/monthly/klines/{s}/1h/{s}-1h-{y}-{m:02d}.zip"
+ARCHIVE = "https://data.binance.vision/data/spot/monthly/klines/{s}/{i}/{s}-{i}-{y}-{m:02d}.zip"
 
 
-def download_history(symbol: str, since: int) -> pd.DataFrame:
-    """Bougies 1h depuis les archives publiques de Binance (mises en cache dans data/)."""
+def download_history(symbol: str, since: int, interval: str = "1h", since_month: int = 1) -> pd.DataFrame:
+    """Bougies depuis les archives publiques de Binance (mises en cache dans data/)."""
     pair = symbol.replace("/", "").upper()
     os.makedirs("data", exist_ok=True)
     frames, today = [], date.today()
@@ -34,10 +34,12 @@ def download_history(symbol: str, since: int) -> pd.DataFrame:
         for m in range(1, 13):
             if (y, m) >= (today.year, today.month):
                 break
-            path = f"data/{pair}-1h-{y}-{m:02d}.csv"
+            if (y, m) < (since, since_month):
+                continue
+            path = f"data/{pair}-{interval}-{y}-{m:02d}.csv"
             if not os.path.exists(path):
                 try:
-                    with urllib.request.urlopen(ARCHIVE.format(s=pair, y=y, m=m), timeout=30) as r:
+                    with urllib.request.urlopen(ARCHIVE.format(s=pair, i=interval, y=y, m=m), timeout=30) as r:
                         z = zipfile.ZipFile(io.BytesIO(r.read()))
                         raw = z.read(z.namelist()[0])
                 except urllib.error.HTTPError:

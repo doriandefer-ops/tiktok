@@ -120,3 +120,18 @@ def test_migration_from_single_crypto_state(tmp_path, monkeypatch):
     assert b.state["paper"]["base"] == {"BTC": 0.01}
     assert b.state["last_candle"] == {}
     b.step()
+
+
+def test_scalp_backtest_fees_matter():
+    from bot.scalp import ScalpConfig, backtest
+    df = synthetic(20000, seed=3, drift=0.0)
+    free = backtest(df, ScalpConfig(fee_pct=0.0))
+    paid = backtest(df, ScalpConfig(fee_pct=0.4))
+    assert free["trades"] == paid["trades"] > 0
+    assert paid["capital_final"] < free["capital_final"]
+
+
+def test_scalp_never_uses_api_keys():
+    """La version scalping ne doit jamais pouvoir passer d'ordre réel."""
+    src = open("bot/scalp.py", encoding="utf-8").read()
+    assert "apiKey" not in src and "create_order" not in src and "API_KEY" not in src

@@ -56,6 +56,28 @@ Pour les autres commandes : ouvre le terminal dans le dossier et tape d'abord `.
 
 Créer un fichier nommé `STOP` dans le dossier arrête aussi le bot.
 
+## Version scalping (simulation uniquement)
+
+Une version « scalping » (~20 trades par jour sur bougies d'1 minute) est fournie **pour
+expérimenter uniquement** : elle ne peut pas passer d'ordre réel (aucune clé API utilisée).
+Capital fictif et suivi séparés du vrai bot.
+
+| Commande | Effet |
+|---|---|
+| `python -m bot.scalp --backtest` | Teste sur les 3 derniers mois (bougies 1 min) |
+| double-clic sur `lancer-scalping.bat` | Simulation en direct avec les vrais prix |
+| `python -m bot.scalp --status` | Résultat de la simulation |
+
+Backtest BTC/EUR, juillet → septembre 2026 (1 807 trades, ~20 par jour) :
+
+| Frais par ordre | Résultat |
+|---|---|
+| 0 % (impossible en vrai) | +10 % |
+| 0,25 % | **−100 %** |
+| 0,4 % (Kraken, ordres au marché) | **−100 %** |
+
+Le gain moyen par trade avant frais (~0,006 %) est 100 fois plus petit que les frais d'un aller-retour.
+
 ## Passer en réel
 
 1. Kraken → **Paramètres → API → Créer une clé**, avec uniquement : Query Funds,
