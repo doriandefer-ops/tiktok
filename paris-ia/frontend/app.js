@@ -71,6 +71,13 @@ function matchCard(m) {
       <div>Les deux marquent<b>${pct(m.btts)}</b></div>
       <div>Buts attendus<b>${m.xg[0]} – ${m.xg[1]}</b></div></div>
       <p class="muted">Scores les plus probables : ${m.scores.map((s) => `${s.score} (${pct(s.p)})`).join(", ")}</p>`;
+    const av = m.availability;
+    if (av) {
+      const list = (ab) => ab.length ? ab.map((a) => `${a.name}${a.weight < 1 ? " (incertain)" : ""}`).join(", ") : "aucun";
+      html += `<div class="absences"><b>${av.lineups ? "Compositions officielles publiées" : "Absents connus"}</b>
+        <div>${m.home} : ${list(av.absent_home)}</div><div>${m.away} : ${list(av.absent_away)}</div>
+        ${av.weighted && (av.lam_mult !== 1 || av.mu_mult !== 1) ? `<div class="muted">Probabilités ajustées : buts attendus ×${av.lam_mult.toFixed(2).replace(".", ",")} pour ${m.home}, ×${av.mu_mult.toFixed(2).replace(".", ",")} pour ${m.away}.</div>` : ""}</div>`;
+    }
     const fair = (o) => m.fair_odds[o].toFixed(2).replace(".", ",");
     html += `<div class="fair">Cotes justes, sans marge : ${m.home} <b>${fair("home")}</b> · Nul <b>${fair("draw")}</b> · ${m.away} <b>${fair("away")}</b></div>`;
     if (m.margin != null) html += `<p class="muted">Marge moyenne prélevée par les bookmakers sur ce match : ${fmtPct(m.margin)}.</p>`;

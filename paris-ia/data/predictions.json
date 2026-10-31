@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-31T19:00+00:00",
+ "generated": "2026-10-31T19:07+00:00",
  "matches": [
   {
    "league": "T1",
@@ -54,7 +54,8 @@
      "p": 0.09765528330676862
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "F1",
@@ -109,7 +110,8 @@
      "p": 0.09890590670688414
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "F1",
@@ -164,7 +166,8 @@
      "p": 0.0827519363838466
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "D1",
@@ -219,7 +222,8 @@
      "p": 0.07718654577904327
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "B1",
@@ -274,7 +278,8 @@
      "p": 0.0862763029024747
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "SP1",
@@ -329,7 +334,8 @@
      "p": 0.09924644223299481
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "F1",
@@ -384,7 +390,8 @@
      "p": 0.08797513505744908
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "P1",
@@ -439,7 +446,8 @@
      "p": 0.10035434406129276
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "T1",
@@ -494,7 +502,8 @@
      "p": 0.08911803338422128
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "E0",
@@ -549,7 +558,8 @@
      "p": 0.07894889579646931
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "SP1",
@@ -604,7 +614,8 @@
      "p": 0.08610291510625721
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "T1",
@@ -659,7 +670,8 @@
      "p": 0.1321341983971948
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "I1",
@@ -714,7 +726,8 @@
      "p": 0.10543053893065032
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "D1",
@@ -769,7 +782,8 @@
      "p": 0.07803674350149346
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "D1",
@@ -824,7 +838,8 @@
      "p": 0.06899998819790346
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "D1",
@@ -879,7 +894,8 @@
      "p": 0.0873139590998
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "D1",
@@ -934,7 +950,8 @@
      "p": 0.10058378105835146
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "D1",
@@ -989,7 +1006,8 @@
      "p": 0.07869099496651381
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "B1",
@@ -1044,7 +1062,8 @@
      "p": 0.08787289103359863
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "E0",
@@ -1099,7 +1118,8 @@
      "p": 0.08736570603412365
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "E0",
@@ -1154,7 +1174,8 @@
      "p": 0.08321981673497747
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "E0",
@@ -1209,7 +1230,8 @@
      "p": 0.11477817546650736
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "E0",
@@ -1264,7 +1286,8 @@
      "p": 0.09203401108109027
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "E0",
@@ -1319,7 +1342,8 @@
      "p": 0.08398324365175881
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "SC0",
@@ -1374,7 +1398,8 @@
      "p": 0.0953991507200572
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "SC0",
@@ -1429,7 +1454,8 @@
      "p": 0.09447533713242369
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "SP1",
@@ -1484,7 +1510,8 @@
      "p": 0.09104872007055403
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "N1",
@@ -1539,7 +1566,8 @@
      "p": 0.08651748602146173
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "P1",
@@ -1594,7 +1622,8 @@
      "p": 0.1025941373963504
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "T1",
@@ -1649,7 +1678,8 @@
      "p": 0.08736024049286716
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "I1",
@@ -1704,7 +1734,8 @@
      "p": 0.09470093146811162
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "B1",
@@ -1759,7 +1790,8 @@
      "p": 0.11372692138433617
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "D1",
@@ -1814,7 +1846,8 @@
      "p": 0.08138813631457524
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "E0",
@@ -1875,7 +1908,8 @@
      "odds": 5.5,
      "edge": 0.129
     }
-   ]
+   ],
+   "availability": null
   },
   {
    "league": "SP1",
@@ -1930,7 +1964,8 @@
      "p": 0.09461104608816671
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "N1",
@@ -1985,7 +2020,8 @@
      "p": 0.08169389726971531
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "N1",
@@ -2040,7 +2076,8 @@
      "p": 0.0837893452723353
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "B1",
@@ -2095,7 +2132,8 @@
      "p": 0.07278487121629056
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "B1",
@@ -2150,7 +2188,8 @@
      "p": 0.09538906073218259
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "F1",
@@ -2205,7 +2244,8 @@
      "p": 0.10070535019474902
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "I1",
@@ -2260,7 +2300,8 @@
      "p": 0.0896111270653066
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "E0",
@@ -2315,7 +2356,8 @@
      "p": 0.08875303814993832
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "N1",
@@ -2370,7 +2412,8 @@
      "p": 0.0761030955514203
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "N1",
@@ -2425,7 +2468,8 @@
      "p": 0.07378623801331369
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "SP1",
@@ -2491,7 +2535,8 @@
      "odds": 19.56,
      "edge": 0.261
     }
-   ]
+   ],
+   "availability": null
   },
   {
    "league": "P1",
@@ -2552,7 +2597,8 @@
      "odds": 13.78,
      "edge": 0.174
     }
-   ]
+   ],
+   "availability": null
   },
   {
    "league": "T1",
@@ -2607,7 +2653,8 @@
      "p": 0.08732512722721254
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "N1",
@@ -2662,7 +2709,8 @@
      "p": 0.07561269091454878
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "I1",
@@ -2717,7 +2765,8 @@
      "p": 0.09624416313521614
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "B1",
@@ -2772,7 +2821,8 @@
      "p": 0.07641222033708553
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "SC0",
@@ -2827,7 +2877,8 @@
      "p": 0.09496474835364789
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "SP1",
@@ -2882,7 +2933,8 @@
      "p": 0.1309748116180869
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "T1",
@@ -2937,7 +2989,8 @@
      "p": 0.09675533086126467
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "T1",
@@ -2992,7 +3045,8 @@
      "p": 0.09168442988030184
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "N1",
@@ -3047,7 +3101,8 @@
      "p": 0.0911159890239938
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "N1",
@@ -3102,7 +3157,8 @@
      "p": 0.07555440660474767
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "F1",
@@ -3157,7 +3213,8 @@
      "p": 0.08435073244245117
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "I1",
@@ -3212,7 +3269,8 @@
      "p": 0.0657841471505556
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "I1",
@@ -3273,7 +3331,8 @@
      "odds": 7.12,
      "edge": 0.114
     }
-   ]
+   ],
+   "availability": null
   },
   {
    "league": "D1",
@@ -3328,7 +3387,8 @@
      "p": 0.08569621580603752
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "B1",
@@ -3383,7 +3443,8 @@
      "p": 0.09901977579439188
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "SP1",
@@ -3444,7 +3505,8 @@
      "odds": 9.92,
      "edge": 0.141
     }
-   ]
+   ],
+   "availability": null
   },
   {
    "league": "P1",
@@ -3499,7 +3561,8 @@
      "p": 0.09297851823161317
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "N1",
@@ -3554,7 +3617,8 @@
      "p": 0.07698206148849444
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "T1",
@@ -3609,7 +3673,8 @@
      "p": 0.08989594490961811
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "F1",
@@ -3664,7 +3729,8 @@
      "p": 0.09784683732271111
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "F1",
@@ -3719,7 +3785,8 @@
      "p": 0.08532775619290928
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "D1",
@@ -3774,7 +3841,8 @@
      "p": 0.07547623256205788
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "E0",
@@ -3829,7 +3897,8 @@
      "p": 0.09645233531798476
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "I1",
@@ -3884,7 +3953,8 @@
      "p": 0.11876502511228089
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "B1",
@@ -3939,7 +4009,8 @@
      "p": 0.10140076759712419
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "SP1",
@@ -3994,7 +4065,8 @@
      "p": 0.09571279948112217
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "P1",
@@ -4049,7 +4121,8 @@
      "p": 0.09730159709610406
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "P1",
@@ -4104,7 +4177,8 @@
      "p": 0.10105773449566002
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "B1",
@@ -4159,7 +4233,8 @@
      "p": 0.11231762988692512
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "F1",
@@ -4214,7 +4289,8 @@
      "p": 0.0876422275593957
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "I1",
@@ -4269,7 +4345,8 @@
      "p": 0.10131658260623531
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "SP1",
@@ -4324,7 +4401,8 @@
      "p": 0.09563595969357461
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "P1",
@@ -4379,7 +4457,8 @@
      "p": 0.09294501826688507
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "T1",
@@ -4434,7 +4513,8 @@
      "p": 0.0963376978719478
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "I1",
@@ -4489,7 +4569,8 @@
      "p": 0.08336801918089544
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "F1",
@@ -4544,7 +4625,8 @@
      "p": 0.08800578827267871
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "I1",
@@ -4599,7 +4681,8 @@
      "p": 0.11048692104207114
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "E0",
@@ -4654,7 +4737,8 @@
      "p": 0.08261457171817876
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "SP1",
@@ -4709,7 +4793,8 @@
      "p": 0.09419850769018857
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "P1",
@@ -4764,7 +4849,8 @@
      "p": 0.09396868643935305
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   },
   {
    "league": "P1",
@@ -4819,7 +4905,8 @@
      "p": 0.11566698500716081
     }
    ],
-   "value": []
+   "value": [],
+   "availability": null
   }
  ]
 }

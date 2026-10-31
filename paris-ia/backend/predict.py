@@ -6,6 +6,8 @@ from datetime import datetime, timezone
 import numpy as np
 import pandas as pd
 
+import apifootball
+import availability
 import backtest
 import data
 import model
@@ -21,8 +23,17 @@ def run(download: bool = True) -> list:
     preds = []
     for code, games in fixtures.groupby("Div"):
         fit = model.fit(results[results["Div"] == code], now)
+        avail = {}
+        if apifootball.key():
+            keys = [(g["Date"].strftime("%Y-%m-%d"), g["HomeTeam"], g["AwayTeam"]) for _, g in games.iterrows()]
+            try:
+                avail = availability.for_league(code, keys, apifootball.season_year(now.date()))
+            except Exception as e:  # quota, réseau, clé : on publie sans ajustement
+                print(f"{code} : absences indisponibles ({e})")
         for _, g in games.iterrows():
-            mk = model.markets(fit.score_matrix(g["HomeTeam"], g["AwayTeam"]))
+            info = avail.get((g["Date"].strftime("%Y-%m-%d"), g["HomeTeam"], g["AwayTeam"]))
+            mk = model.markets(fit.score_matrix(g["HomeTeam"], g["AwayTeam"],
+                                                info["lam_mult"] if info else 1.0, info["mu_mult"] if info else 1.0))
             p_model = np.array([mk["home"], mk["draw"], mk["away"]])
             p_open = backtest.implied(g, ["AvgH", "AvgD", "AvgA"])
             p_pub = backtest.blend(p_model, p_open)
@@ -47,6 +58,7 @@ def run(download: bool = True) -> list:
                 "over25": mk["over25"], "btts": mk["btts"],
                 "xg": [round(mk["xg_home"], 2), round(mk["xg_away"], 2)],
                 "scores": mk["scores"], "value": value,
+                "availability": info,
             })
     preds.sort(key=lambda p: (p["date"], p["time"] or "", p["league"]))
     OUT.write_text(json.dumps({"generated": datetime.now(timezone.utc).isoformat(timespec="minutes"),

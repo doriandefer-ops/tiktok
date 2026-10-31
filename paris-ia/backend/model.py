@@ -27,8 +27,10 @@ class Fit:
         aa, da = (self.attack[idx[away_team]], self.defence[idx[away_team]]) if away_team in idx else (-0.15, 0.15)
         return np.exp(self.home + ah + da), np.exp(aa + dh)
 
-    def score_matrix(self, home_team: str, away_team: str) -> np.ndarray:
+    def score_matrix(self, home_team: str, away_team: str, lam_mult: float = 1.0, mu_mult: float = 1.0) -> np.ndarray:
+        """`lam_mult` / `mu_mult` : correction des buts attendus (absences, voir availability.py)."""
         lam, mu = self.rates(home_team, away_team)
+        lam, mu = lam * lam_mult, mu * mu_mult
         g = np.arange(MAX_GOALS + 1)
         m = np.outer(poisson.pmf(g, lam), poisson.pmf(g, mu))
         r = self.rho

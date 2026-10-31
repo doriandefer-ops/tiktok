@@ -2,3 +2,4 @@ data/raw/
 data/*.sqlite
 __pycache__/
 .env
+data/api/

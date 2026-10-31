@@ -23,9 +23,35 @@ Ouvrir http://localhost:8000. Sans clés Stripe, le bouton d'abonnement active l
 | `backend/data.py` | Téléchargement des résultats et cotes de 4 saisons |
 | `backend/model.py` | Modèle Dixon-Coles pondéré dans le temps : 1X2, +2,5 buts, BTTS, buts attendus, scores |
 | `backend/backtest.py` | Réentraînement hebdomadaire sans regard vers le futur, ROI et CLV contre le marché |
+| `backend/apifootball.py` | Client API-Football avec cache et budget quotidien |
+| `backend/availability.py` | Absents, compositions, poids des joueurs, correction des buts attendus |
+| `backend/calibrate.py` | Mesure de l'apport des absences et réglage des coefficients |
 | `backend/predict.py` | Probabilités publiées (35 % modèle, 65 % marché) et écarts avec les meilleures cotes |
 | `backend/app.py` | API FastAPI : comptes (18+), offres Gratuit / Premium / Pro, Stripe Checkout + webhook |
 | `frontend/` | Site : matchs, bilan public, offres, mentions de prévention obligatoires |
+
+## Blessés et compositions (API-Football)
+
+1. Créer un compte sur https://dashboard.api-football.com et copier la clé (offre gratuite : 100 requêtes par jour).
+2. `export API_FOOTBALL_KEY=ta_clé` puis `python3 predict.py`.
+
+Pour chaque match, le site récupère les blessés, suspendus et joueurs incertains, et la composition
+officielle quand elle est publiée (environ 30 minutes avant le coup d'envoi). Chaque absent est pondéré
+par sa part des buts et passes décisives et par son temps de jeu, puis les buts attendus des deux équipes
+sont corrigés (`backend/availability.py`).
+
+Requêtes par mise à jour : environ 2 par championnat (calendrier, blessés), plus une par match proche
+du coup d'envoi pour les compositions. Les statistiques des joueurs (~35 requêtes par championnat) sont
+gardées en cache une semaine. Un budget quotidien (`API_FOOTBALL_DAILY_BUDGET`, 90 par défaut) évite de
+dépasser le quota ; si le budget est épuisé, les absents s'affichent sans ajuster les probabilités.
+
+**À faire une fois la clé obtenue : `python3 calibrate.py`.** Ce script mesure sur la saison 2025-26 si les
+absences améliorent vraiment les prédictions, et règle les coefficients (`data/calibration.json`). Il coûte
+environ 700 requêtes : offre payante, ou un championnat par jour sur l'offre gratuite
+(`python3 calibrate.py E0`, puis `F1`… le cache conserve les réponses). Tant que la calibration n'est pas
+faite, les coefficients `K_ATT = 0.6` et `K_DEF = 0.5` sont des valeurs de départ non vérifiées.
+
+Tests (réponses API simulées) : `python3 -m unittest discover tests`
 
 ## Stripe (paiement réel)
 
