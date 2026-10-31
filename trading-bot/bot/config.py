@@ -13,12 +13,16 @@ class Config:
     api_secret: str = ""
     api_password: str = ""
     sandbox: bool = False
-    symbol: str = "BTC/EUR"
+    symbols: tuple = ("BTC/EUR", "ETH/EUR")
     timeframe: str = "4h"
     ema_fast: int = 72
     ema_slow: int = 156
     position_pct: float = 50.0
     paper_start_balance: float = 1000.0
+
+    @property
+    def quote(self) -> str:
+        return self.symbols[0].split("/")[1]
 
     @property
     def live(self) -> bool:
@@ -35,7 +39,7 @@ def load_config(env_file: str = ".env") -> Config:
         api_secret=g("API_SECRET", "").strip(),
         api_password=g("API_PASSWORD", "").strip(),
         sandbox=g("SANDBOX", "false").strip().lower() == "true",
-        symbol=g("SYMBOL", "BTC/EUR").strip(),
+        symbols=tuple(x.strip() for x in (g("SYMBOLS") or g("SYMBOL") or "BTC/EUR,ETH/EUR").split(",") if x.strip()),
         timeframe=g("TIMEFRAME", "4h").strip(),
         ema_fast=int(g("EMA_FAST", 72)),
         ema_slow=int(g("EMA_SLOW", 156)),
@@ -44,6 +48,8 @@ def load_config(env_file: str = ".env") -> Config:
     )
     if cfg.mode not in ("paper", "live"):
         raise ValueError("MODE doit valoir 'paper' ou 'live'")
+    if not cfg.symbols or len({x.split("/")[1] for x in cfg.symbols}) != 1:
+        raise ValueError("SYMBOLS doit lister des paires de même devise, ex : BTC/EUR,ETH/EUR")
     if cfg.ema_fast >= cfg.ema_slow:
         raise ValueError("EMA_FAST doit être plus petit que EMA_SLOW")
     if not 0 < cfg.position_pct <= 100:
