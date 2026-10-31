@@ -30,7 +30,7 @@ def make_exchange(cfg, authenticated: bool) -> ccxt.Exchange:
     return ex
 
 
-def fetch_candles(ex: ccxt.Exchange, symbol: str, timeframe: str, limit: int = 300) -> pd.DataFrame:
+def fetch_candles(ex: ccxt.Exchange, symbol: str, timeframe: str, limit: int = 720) -> pd.DataFrame:
     """Bougies OHLCV ; la dernière bougie (pas encore clôturée) est retirée."""
     raw = ex.fetch_ohlcv(symbol, timeframe, limit=limit + 1)
     df = pd.DataFrame(raw, columns=["ts", "open", "high", "low", "close", "volume"])
@@ -50,7 +50,7 @@ class BaseBroker:
     def price(self) -> float:
         return float(self.ex.fetch_ticker(self.cfg.symbol)["last"])
 
-    def candles(self, limit: int = 300) -> pd.DataFrame:
+    def candles(self, limit: int = 720) -> pd.DataFrame:
         return fetch_candles(self.ex, self.cfg.symbol, self.cfg.timeframe, limit)
 
     def tradable(self, qty: float, price: float) -> bool:

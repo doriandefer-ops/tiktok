@@ -1,78 +1,64 @@
-# Bot de trading
+# Bot de trading — suivi de tendance
 
 Bot automatique en Python qui se connecte à ton compte via **CCXT**
-(Binance, Kraken, Coinbase, Bybit, OKX, Bitget, KuCoin… plus de 100 plateformes crypto).
+(Kraken, Binance, Coinbase, Bitstamp, Bybit, OKX… plus de 100 plateformes crypto).
+Configuré par défaut pour **Kraken, BTC/EUR, bougies de 4h**.
 
-> ⚠️ **Avertissement** : le trading comporte un risque de perte en capital.
-> Aucune stratégie ne garantit des gains. Ce bot démarre en **mode simulation** (`MODE=paper`) :
-> teste-le plusieurs semaines avant de passer en réel, et uniquement avec de l'argent que tu peux perdre.
+> ⚠️ Le trading comporte un risque de perte en capital. Les résultats passés ne garantissent
+> pas les résultats futurs. Le bot démarre en **mode simulation** (`MODE=paper`).
 
-## Ce que fait le bot
+## La stratégie
 
-| | |
+- Tendance haussière (moyenne 12 jours > moyenne 26 jours) → le bot investit `POSITION_PCT` % du capital.
+- Tendance baissière → le bot revend tout et reste en euros.
+- Pas d'objectif de gain : on laisse courir les hausses. Beaucoup de petites pertes,
+  quelques gros gains. Seulement ~1 trade par mois en moyenne.
+
+Le but : capter une bonne partie des hausses et **éviter une grande partie des krachs**.
+
+### Backtest BTC/EUR (mars 2021 → sept. 2026, frais inclus)
+
+| Réglage | Gain bot | Gain achat simple | Pire chute bot | Pire chute achat simple |
+|---|---|---|---|---|
+| 50 % investi (défaut) | +77 % | +50 % | **−30 %** | −74 % |
+| 100 % investi | +153 % | +50 % | −50 % | −74 % |
+
+Limites connues : lors d'une forte hausse continue (ex. 2023-2024), le bot gagne **moins** que
+l'achat simple, car il n'investit qu'une partie du capital et entre en retard.
+Environ 1 trade sur 3 est gagnant : c'est normal pour ce type de stratégie.
+
+## Installation (Windows)
+
+1. Ouvre le dossier `trading-bot`, tape `cmd` dans la barre d'adresse, puis Entrée.
+2. Dans le terminal :
+   ```
+   py -V:3.13 -m venv .venv
+   .venv\Scripts\activate
+   python -m pip install -r requirements.txt
+   copy .env.example .env
+   ```
+À chaque nouvelle session : ouvre le terminal dans le dossier et tape `.venv\Scripts\activate`.
+
+## Utilisation
+
+| Commande | Effet |
 |---|---|
-| **Stratégie** | Achat quand l'EMA 12 croise au-dessus de l'EMA 26, prix au-dessus de l'EMA 26 et RSI < 70 |
-| **Sorties** | Stop-loss à 2×ATR, take-profit à 3×ATR, ou croisement baissier des EMA |
-| **Risque** | 1 % du capital risqué par trade, max 25 % du capital par position |
-| **Sécurité** | Arrêt des nouveaux trades si −3 % sur la journée ; fichier `STOP` = arrêt d'urgence |
-| **Mémoire** | Position et historique dans `state.json` (le bot reprend après un redémarrage) |
-| **Journal** | `logs/bot.log` |
+| `python -m bot.backtest` | Teste la stratégie sur 5 ans d'historique |
+| `python -m bot.main` | Lance le bot (Ctrl+C pour l'arrêter) |
+| `python -m bot.main --once` | Une seule vérification (test de connexion) |
+| `python -m bot.main --status` | Capital, position, historique des trades |
+| `python -m bot.main --close` | Vend la position maintenant |
 
-Spot uniquement, achat seul (pas de vente à découvert, pas de levier). Tous les paramètres
-sont réglables dans `.env`.
+Créer un fichier nommé `STOP` dans le dossier arrête aussi le bot.
 
-## Installation
+## Passer en réel
 
-```bash
-cd trading-bot
-python3 -m venv .venv
-source .venv/bin/activate        # Windows : .venv\Scripts\activate
-pip install -r requirements.txt
-cp .env.example .env             # puis édite .env
-```
+1. Kraken → **Paramètres → API → Créer une clé**, avec uniquement : Query Funds,
+   Query Open Orders & Trades, Query Closed Orders & Trades, Create & Modify Orders,
+   Cancel/Close Orders. **Jamais « Withdraw Funds ».**
+2. Dans `.env` : `API_KEY=`, `API_SECRET=`, puis `MODE=live`.
+3. Avoir des euros sur le compte Kraken. Le bot ne vend que ce qu'il a lui-même acheté.
 
-## Étape 1 — Backtest (tester sur l'historique)
-
-```bash
-python -m bot.backtest --candles 3000
-```
-Compare `return_pct` à `buy_and_hold_pct` et regarde `max_drawdown_pct`.
-Si la stratégie ne bat pas le simple « acheter et garder », ajuste les paramètres.
-
-## Étape 2 — Simulation avec les vrais prix (`MODE=paper`)
-
-```bash
-python -m bot.main
-```
-Aucune clé API nécessaire. Laisse tourner quelques semaines.
-
-## Étape 3 — Connexion à ton compte (`MODE=live`)
-
-1. Sur ta plateforme : **Profil → Gestion des API → Créer une clé**.
-2. Permissions : ✅ **Lecture** + ✅ **Trading spot**. ❌ **NE COCHE JAMAIS « Retrait »**.
-3. Si possible, restreins la clé à l'adresse IP de la machine qui fait tourner le bot.
-4. Dans `.env` : `EXCHANGE=`, `API_KEY=`, `API_SECRET=` (et `API_PASSWORD=` pour OKX/KuCoin/Bitget).
-5. Optionnel mais conseillé : `SANDBOX=true` d'abord si ta plateforme a un testnet.
-6. `MODE=live` puis `python -m bot.main`.
-
-Le compte doit contenir la devise de cotation (ex. USDT pour `BTC/USDT`).
-Le bot ne vend que ce qu'il a lui-même acheté.
-
-## Commandes utiles
-
-```bash
-python -m bot.main --once     # une seule itération (vérifier que tout est connecté)
-python -m bot.main --close    # fermer la position ouverte maintenant
-touch STOP                    # arrêter le bot proprement (rm STOP pour relancer)
-python -m pytest tests        # tests
-```
-
-## Important
-
-- Le stop-loss est **surveillé par le bot** (toutes les 30 s) : si le bot est éteint,
-  le stop n'est pas appliqué. Fais-le tourner sur une machine allumée en permanence
-  (petit serveur/VPS) ou ferme ta position avant de l'arrêter.
-- Ne partage jamais ton fichier `.env` ; il est exclu de git.
-- Courtiers actions français (Boursorama, Degiro, Trade Republic…) : pas d'API publique,
-  donc non compatibles. Pour les actions, il faudrait un courtier avec API
-  (Interactive Brokers, Alpaca) — un module dédié peut être ajouté.
+Le bot décide toutes les 4h, à la clôture des bougies. S'il est éteint, il ne pourra pas vendre
+si la tendance se retourne : garde-le allumé, ou utilise `--close` avant une longue absence.
+Ne partage jamais ton fichier `.env`.
