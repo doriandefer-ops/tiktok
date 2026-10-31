@@ -7,6 +7,7 @@ import os
 import pathlib
 import secrets
 import sqlite3
+import threading
 import time
 
 from fastapi import FastAPI, HTTPException, Request, Response
@@ -23,8 +24,27 @@ STRIPE_KEY = os.environ.get("STRIPE_SECRET_KEY")
 STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET")
 PRICES = {"premium": os.environ.get("STRIPE_PRICE_PREMIUM"), "pro": os.environ.get("STRIPE_PRICE_PRO")}
 PLANS = {"free": 0, "premium": 1, "pro": 2}
+REFRESH_HOURS = float(os.environ.get("REFRESH_HOURS", "0"))
+SECURE_COOKIE = SITE_URL.startswith("https://")
 
 app = FastAPI(title="Paris IA")
+
+
+def refresh_loop():
+    """Retélécharge résultats et cotes puis recalcule les probabilités toutes les REFRESH_HOURS heures."""
+    import predict
+    while True:
+        try:
+            predict.run()
+        except Exception as e:
+            print(f"Mise à jour impossible : {e}", flush=True)
+        time.sleep(REFRESH_HOURS * 3600)
+
+
+@app.on_event("startup")
+def start_refresh():
+    if REFRESH_HOURS > 0:
+        threading.Thread(target=refresh_loop, daemon=True).start()
 
 
 def db():
@@ -79,7 +99,7 @@ def signup(c: Credentials, response: Response):
                               (c.email.lower(), salt, hash_pw(c.password, salt), int(time.time()))).lastrowid
     except sqlite3.IntegrityError:
         raise HTTPException(400, "Un compte existe déjà avec cet email.")
-    response.set_cookie("session", sign(uid), httponly=True, samesite="lax", max_age=30 * 86400)
+    response.set_cookie("session", sign(uid), httponly=True, samesite="lax", secure=SECURE_COOKIE, max_age=30 * 86400)
     return {"ok": True}
 
 
@@ -89,7 +109,7 @@ def login(c: Credentials, response: Response):
         u = con.execute("select * from users where email = ?", (c.email.lower(),)).fetchone()
     if not u or not hmac.compare_digest(u["pw"], hash_pw(c.password, u["salt"])):
         raise HTTPException(401, "Identifiants incorrects.")
-    response.set_cookie("session", sign(u["id"]), httponly=True, samesite="lax", max_age=30 * 86400)
+    response.set_cookie("session", sign(u["id"]), httponly=True, samesite="lax", secure=SECURE_COOKIE, max_age=30 * 86400)
     return {"ok": True}
 
 
@@ -103,7 +123,7 @@ def logout(response: Response):
 def me(request: Request):
     u = current_user(request)
     return {"email": u["email"] if u else None, "plan": u["plan"] if u else "free",
-            "stripe": bool(STRIPE_KEY)}
+            "stripe": bool(STRIPE_KEY and all(PRICES.values()))}
 
 
 @app.get("/api/matches")

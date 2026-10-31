@@ -138,6 +138,7 @@ async function loadTrackRecord() {
 
 (async () => {
   me = await api("/api/me");
+  if (!me.stripe) $("#demo-banner").hidden = false;
   renderAccount();
   await Promise.all([loadMatches(), loadTrackRecord()]);
 })();

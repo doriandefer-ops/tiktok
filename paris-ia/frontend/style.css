@@ -5,6 +5,7 @@
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 system-ui, -apple-system, Segoe UI, sans-serif; }
 a { color: inherit; }
+.demo { background: #3d2e00; color: #f2cc60; text-align: center; padding: 8px 16px; font-size: 13px; }
 main { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
 .top { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; gap: 24px; padding: 12px 16px; background: rgba(13,17,23,.92); border-bottom: 1px solid var(--line); backdrop-filter: blur(6px); }
 .brand { font-weight: 800; font-size: 20px; text-decoration: none; }
