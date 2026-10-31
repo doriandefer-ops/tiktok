@@ -20,6 +20,7 @@ def run(download: bool = True) -> list:
         data.download()
     results, fixtures = data.results(), data.fixtures()
     now = pd.Timestamp.now().normalize()
+    fixtures = fixtures[fixtures["Date"] >= now]  # le fichier source garde parfois des matchs déjà joués
     preds = []
     for code, games in fixtures.groupby("Div"):
         fit = model.fit(results[results["Div"] == code], now)
