@@ -6,18 +6,19 @@ import json
 import os
 import pathlib
 import secrets
-import sqlite3
 import threading
 import time
 
 from fastapi import FastAPI, HTTPException, Request, Response
-from fastapi.responses import FileResponse
+from fastapi.responses import HTMLResponse, PlainTextResponse, Response as RawResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
+import db
+import pages
+
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
-DB = DATA / "app.sqlite"
 SECRET = os.environ.get("APP_SECRET", "dev-secret-a-changer").encode()
 SITE_URL = os.environ.get("SITE_URL", "http://localhost:8000")
 STRIPE_KEY = os.environ.get("STRIPE_SECRET_KEY")
@@ -43,17 +44,9 @@ def refresh_loop():
 
 @app.on_event("startup")
 def start_refresh():
+    db.init()
     if REFRESH_HOURS > 0:
         threading.Thread(target=refresh_loop, daemon=True).start()
-
-
-def db():
-    con = sqlite3.connect(DB)
-    con.row_factory = sqlite3.Row
-    con.execute("""create table if not exists users (
-        id integer primary key, email text unique not null, salt text not null, pw text not null,
-        plan text not null default 'free', stripe_customer text, created integer not null)""")
-    return con
 
 
 def hash_pw(pw: str, salt: str) -> str:
@@ -68,11 +61,10 @@ def sign(uid: int) -> str:
 def current_user(request: Request):
     token = request.cookies.get("session", "")
     body, _, sig = token.partition(".")
-    if not body or not hmac.compare_digest(sig, hmac.new(SECRET, body.encode(), "sha256").hexdigest()):
+    if not body or not hmac.compare_digest(sig.encode(), hmac.new(SECRET, body.encode(), "sha256").hexdigest().encode()):
         return None
     uid = json.loads(base64.urlsafe_b64decode(body))["uid"]
-    with db() as con:
-        return con.execute("select * from users where id = ?", (uid,)).fetchone()
+    return db.one("select * from users where id = ?", (uid,))
 
 
 def plan_of(request: Request) -> str:
@@ -94,10 +86,9 @@ def signup(c: Credentials, response: Response):
         raise HTTPException(400, "Email invalide ou mot de passe trop court (8 caractères minimum).")
     salt = secrets.token_hex(16)
     try:
-        with db() as con:
-            uid = con.execute("insert into users (email, salt, pw, created) values (?, ?, ?, ?)",
-                              (c.email.lower(), salt, hash_pw(c.password, salt), int(time.time()))).lastrowid
-    except sqlite3.IntegrityError:
+        uid = db.insert("insert into users (email, salt, pw, created) values (?, ?, ?, ?)",
+                        (c.email.lower(), salt, hash_pw(c.password, salt), int(time.time())))
+    except db.Duplicate:
         raise HTTPException(400, "Un compte existe déjà avec cet email.")
     response.set_cookie("session", sign(uid), httponly=True, samesite="lax", secure=SECURE_COOKIE, max_age=30 * 86400)
     return {"ok": True}
@@ -105,8 +96,7 @@ def signup(c: Credentials, response: Response):
 
 @app.post("/api/login")
 def login(c: Credentials, response: Response):
-    with db() as con:
-        u = con.execute("select * from users where email = ?", (c.email.lower(),)).fetchone()
+    u = db.one("select * from users where email = ?", (c.email.lower(),))
     if not u or not hmac.compare_digest(u["pw"], hash_pw(c.password, u["salt"])):
         raise HTTPException(401, "Identifiants incorrects.")
     response.set_cookie("session", sign(u["id"]), httponly=True, samesite="lax", secure=SECURE_COOKIE, max_age=30 * 86400)
@@ -133,9 +123,11 @@ def matches(request: Request):
     if not path.exists():
         return {"generated": None, "matches": [], "plan": plan_of(request)}
     payload = json.loads(path.read_text())
+    for m in payload["matches"]:
+        m["slug"] = pages.match_slug(m)
     plan = plan_of(request)
     if PLANS[plan] < PLANS["premium"]:
-        keep = {"league", "league_name", "date", "time", "home", "away", "probs"}
+        keep = {"league", "league_name", "date", "time", "home", "away", "probs", "slug"}
         payload["matches"] = [{k: v for k, v in m.items() if k in keep} | {"locked": True}
                               for m in payload["matches"]]
     payload["plan"] = plan
@@ -153,6 +145,25 @@ def track_record(request: Request):
     return {"summary": summary, "picks": recent}
 
 
+class Subscription(BaseModel):
+    email: str
+    consent: bool = False
+
+
+@app.post("/api/newsletter")
+def newsletter(s: Subscription):
+    if not s.consent:
+        raise HTTPException(400, "Coche la case pour accepter de recevoir la newsletter.")
+    if "@" not in s.email or len(s.email) > 254:
+        raise HTTPException(400, "Email invalide.")
+    try:
+        db.insert("insert into newsletter (email, created, source) values (?, ?, ?)",
+                  (s.email.strip().lower(), int(time.time()), "site"))
+    except db.Duplicate:
+        pass  # déjà inscrit : même réponse, pour ne pas révéler qui est inscrit
+    return {"ok": True}
+
+
 @app.post("/api/checkout/{plan}")
 def checkout(plan: str, request: Request):
     u = current_user(request)
@@ -162,8 +173,7 @@ def checkout(plan: str, request: Request):
         raise HTTPException(404)
     if not STRIPE_KEY or not PRICES[plan]:
         # Mode démo : pas de clés Stripe, l'offre est activée directement.
-        with db() as con:
-            con.execute("update users set plan = ? where id = ?", (plan, u["id"]))
+        db.run("update users set plan = ? where id = ?", (plan, u["id"]))
         return {"url": "/?demo=1"}
     import stripe
     stripe.api_key = STRIPE_KEY
@@ -189,18 +199,49 @@ async def stripe_webhook(request: Request):
     except Exception:
         raise HTTPException(400, "Signature invalide")
     obj = event["data"]["object"]
-    with db() as con:
-        if event["type"] == "checkout.session.completed":
-            con.execute("update users set plan = ?, stripe_customer = ? where id = ?",
-                        (obj["metadata"]["plan"], obj["customer"], int(obj["client_reference_id"])))
-        elif event["type"] == "customer.subscription.deleted":
-            con.execute("update users set plan = 'free' where stripe_customer = ?", (obj["customer"],))
+    if event["type"] == "checkout.session.completed":
+        db.run("update users set plan = ?, stripe_customer = ? where id = ?",
+               (obj["metadata"]["plan"], obj["customer"], int(obj["client_reference_id"])))
+    elif event["type"] == "customer.subscription.deleted":
+        db.run("update users set plan = 'free' where stripe_customer = ?", (obj["customer"],))
     return {"ok": True}
 
 
 app.mount("/static", StaticFiles(directory=ROOT / "frontend"), name="static")
 
 
-@app.get("/")
+@app.get("/", response_class=HTMLResponse)
 def index():
-    return FileResponse(ROOT / "frontend" / "index.html")
+    page = (ROOT / "frontend" / "index.html").read_text()
+    return page.replace("noindex, nofollow", "index, follow") if pages.INDEXABLE else page
+
+
+@app.get("/matchs", response_class=HTMLResponse)
+def matches_list():
+    return pages.matches_page()
+
+
+@app.get("/match/{slug}", response_class=HTMLResponse)
+def match(slug: str):
+    page = pages.match_page(slug)
+    if page is None:
+        raise HTTPException(404, "Match introuvable ou déjà joué.")
+    return page
+
+
+@app.get("/sitemap.xml")
+def sitemap():
+    return RawResponse(pages.sitemap(), media_type="application/xml")
+
+
+@app.get("/robots.txt", response_class=PlainTextResponse)
+def robots():
+    return pages.robots()
+
+
+@app.get("/{name}", response_class=HTMLResponse)
+def legal(name: str):
+    page = pages.legal_page(name)
+    if page is None:
+        raise HTTPException(404)
+    return page

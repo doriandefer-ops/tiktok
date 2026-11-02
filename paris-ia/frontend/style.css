@@ -67,3 +67,20 @@ dialog input[type=email], dialog input[type=password] { width: 100%; margin-top:
 .error { color: var(--bad); font-size: 13px; min-height: 1em; }
 footer { border-top: 1px solid var(--line); margin-top: 32px; padding: 20px 16px; color: var(--muted); font-size: 13px; text-align: center; }
 @media (max-width: 600px) { .top nav, #account .muted { display: none; } .top { justify-content: space-between; } }
+
+.card .teams { text-decoration: none; }
+.card .teams:hover span { text-decoration: underline; }
+.newsletter { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; max-width: 640px; }
+.newsletter input[type=email] { flex: 1; min-width: 200px; padding: 8px; background: var(--panel); color: var(--text); border: 1px solid var(--line); border-radius: 8px; }
+.newsletter .check { display: block !important; flex-basis: 100%; font-size: 13px; color: var(--muted); }
+.page { max-width: 760px; padding-top: 24px; padding-bottom: 24px; }
+.page h1 { font-size: clamp(24px, 4vw, 32px); line-height: 1.2; }
+.page .lead { font-size: 17px; }
+.page a { color: var(--accent); }
+.draft { background: #3d2e00; color: #f2cc60; padding: 8px 12px; border-radius: 8px; font-size: 13px; }
+mark { background: #3d2e00; color: #f2cc60; padding: 0 3px; border-radius: 3px; }
+.cta { margin-top: 24px; padding: 16px; border: 1px solid var(--accent); border-radius: 12px; }
+.button { display: inline-block; background: var(--accent); color: #04140a !important; text-decoration: none; padding: 8px 14px; border-radius: 8px; font-weight: 600; }
+.match-list { padding-left: 18px; }
+.match-list li { margin: 6px 0; }
+footer a { color: var(--muted); }

@@ -27,6 +27,8 @@ Ouvrir http://localhost:8000. Sans clés Stripe, le bouton d'abonnement active l
 | `backend/availability.py` | Absents, compositions, poids des joueurs, correction des buts attendus |
 | `backend/calibrate.py` | Mesure de l'apport des absences et réglage des coefficients |
 | `backend/predict.py` | Probabilités publiées (35 % modèle, 65 % marché) et écarts avec les meilleures cotes |
+| `backend/db.py` | Accès aux données : PostgreSQL (`DATABASE_URL`) ou SQLite en local |
+| `backend/pages.py` | Pages par match, liste des matchs, pages légales, sitemap, robots.txt |
 | `backend/app.py` | API FastAPI : comptes (18+), offres Gratuit / Premium / Pro, Stripe Checkout + webhook |
 | `frontend/` | Site : matchs, bilan public, offres, mentions de prévention obligatoires |
 
@@ -52,6 +54,20 @@ environ 700 requêtes : offre payante, ou un championnat par jour sur l'offre gr
 faite, les coefficients `K_ATT = 0.6` et `K_DEF = 0.5` sont des valeurs de départ non vérifiées.
 
 Tests (réponses API simulées) : `python3 -m unittest discover tests`
+
+## Base de données
+
+En local, comptes et inscrits à la newsletter sont dans `data/app.sqlite`. En production, définir
+`DATABASE_URL` (adresse PostgreSQL) : les tables sont créées au démarrage (`backend/db.py`).
+
+## Pages publiques et référencement
+
+- `/matchs` : liste des matchs à venir ; `/match/<date>-<domicile>-<exterieur>` : une page par match
+  (probabilités, cotes justes, absents, données structurées SportsEvent).
+- `/mentions-legales`, `/cgv`, `/confidentialite` : **brouillons à faire valider par un avocat**, champs à
+  compléter surlignés.
+- `/sitemap.xml`, `/robots.txt`. Tant que `INDEXABLE=1` n'est pas défini, tout le site est exclu des moteurs.
+- `POST /api/newsletter` enregistre les inscrits (avec consentement). L'envoi n'est pas encore branché.
 
 ## Stripe (paiement réel)
 

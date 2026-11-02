@@ -1,6 +1,7 @@
 const $ = (s) => document.querySelector(s);
 const pct = (p) => `${Math.round(p * 100)} %`;
-const outcomeLabel = (m, o) => (o === "draw" ? "un match nul" : `une victoire de ${o === "home" ? m.home : m.away}`);
+const de = (n) => (/^[aeiouyéèêàâî]/i.test(n) ? `d'${n}` : `de ${n}`);
+const outcomeLabel = (m, o) => (o === "draw" ? "un match nul" : `une victoire ${de(o === "home" ? m.home : m.away)}`);
 const fmtPct = (p) => `${(p * 100).toFixed(1).replace(".", ",")} %`;
 let me = { plan: "free" };
 let signupMode = true;
@@ -59,7 +60,7 @@ function matchCard(m) {
   const fav = ["home", "draw", "away"].reduce((a, b) => (p[b] > p[a] ? b : a));
   let html = `<div class="card">
     <div class="meta"><span>${m.league_name}</span><span>${m.date.split("-").reverse().join("/")} ${m.time || ""}</span></div>
-    <div class="teams"><span>${m.home}</span><span>${m.away}</span></div>
+    <a class="teams" href="/match/${m.slug}"><span>${m.home}</span><span>${m.away}</span></a>
     <div class="bar"><div class="h" style="flex:${p.home}">${pct(p.home)}</div><div class="d" style="flex:${p.draw}">${pct(p.draw)}</div><div class="a" style="flex:${p.away}">${pct(p.away)}</div></div>
     <div class="legend"><span>Victoire ${m.home}</span><span>Nul</span><span>Victoire ${m.away}</span></div>
     <p class="estimate">Le modèle estime à <b>${pct(p[fav])}</b> les chances d'${outcomeLabel(m, fav)}.</p>`;
@@ -135,6 +136,16 @@ async function loadTrackRecord() {
     <td>${h.pick.outcome === "draw" ? "Nul" : `Victoire ${h.pick.outcome === "home" ? h.home : h.away}`}</td><td>${pct(h.pick.p)}</td><td>${h.pick.odds.toFixed(2)}</td>
     <td>${h.score}</td><td class="${h.pick.won ? "pos" : "neg"}">${h.pick.won ? "Réalisé" : "Non réalisé"}</td></tr>`).join("");
 }
+
+$("#newsletter-form").onsubmit = async (e) => {
+  e.preventDefault();
+  const f = new FormData(e.target);
+  try {
+    await api("/api/newsletter", { method: "POST", body: JSON.stringify({ email: f.get("email"), consent: f.get("consent") === "on" }) });
+    $("#newsletter-msg").textContent = "C'est noté : tu recevras la première newsletter dès son lancement.";
+    e.target.reset();
+  } catch (err) { $("#newsletter-msg").textContent = err.message; }
+};
 
 (async () => {
   me = await api("/api/me");
