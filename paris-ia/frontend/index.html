@@ -23,7 +23,7 @@
   <section class="hero">
     <h1>Les probabilités de chaque match, calculées par un modèle et vérifiées en public.</h1>
     <p>10 championnats européens. Probabilités 1X2, buts, scores probables, cotes justes sans la marge des bookmakers.
-       Chaque pronostic est archivé avant le match, et le bilan est affiché même quand il est négatif.</p>
+       Chaque estimation est publiée avant le match, et sa précision est comparée publiquement à celle du marché, même quand elle est moins bonne.</p>
   </section>
 
   <section id="matchs">
@@ -36,12 +36,9 @@
   </section>
 
   <section id="bilan">
-    <h2>Bilan vérifiable : le modèle face au marché</h2>
-    <p class="muted">Backtest sans regard vers le futur : chaque semaine, le modèle est réentraîné sur le passé uniquement, puis comparé aux cotes moyennes du marché. Résultat actuel : le marché reste plus précis que le modèle seul (une erreur plus basse est meilleure), et les matchs où le modèle s'écarte nettement des cotes ne sont pas rentables. C'est pourquoi les probabilités publiées combinent le modèle (30 %) et le marché sans marge (70 %).</p>
+    <h2>Bilan de précision : le modèle face au marché</h2>
+    <p class="muted">Test sans regard vers le futur : chaque semaine, le modèle est réentraîné sur le passé uniquement, puis ses probabilités sont comparées aux résultats réels et à celles du marché. Plus l'erreur est basse, plus les probabilités sont justes. Résultat actuel : le marché reste plus précis que le modèle seul. C'est pourquoi les probabilités publiées combinent le modèle (30 %) et le marché sans marge (70 %). Ces chiffres mesurent la justesse des probabilités, pas un gain : aucun outil ne permet de gagner à coup sûr.</p>
     <div id="stats" class="stats"></div>
-    <div id="chart"></div>
-    <h3>Laboratoire : derniers écarts entre le modèle et les cotes (non recommandés)</h3>
-    <div class="table-wrap"><table id="picks"><thead><tr><th>Date</th><th>Match</th><th>Issue étudiée</th><th>Probabilité du modèle</th><th>Cote</th><th>Score</th><th>Issue</th></tr></thead><tbody></tbody></table></div>
   </section>
 
   <section id="newsletter">
@@ -69,12 +66,22 @@
       </div>
       <div class="plan">
         <h3>Pro</h3><p class="price">39,99 €<small>/mois</small></p>
-        <ul><li>Tout Premium</li><li>Historique complet de chaque pronostic</li><li>Alertes et export (à venir)</li></ul>
+        <ul><li>Tout Premium</li><li>Historique complet des probabilités publiées</li><li>Alertes et export (à venir)</li></ul>
         <button data-plan="pro">Choisir Pro</button>
       </div>
     </div>
   </section>
 </main>
+
+<dialog id="subscribe">
+  <form id="subscribe-form" method="dialog">
+    <h3 id="subscribe-title">Abonnement</h3>
+    <label class="check"><input name="cgv" type="checkbox" required> <span>J'ai lu et j'accepte les <a href="/cgv" target="_blank">conditions générales de vente</a>.</span></label>
+    <label class="check"><input name="immediate" type="checkbox" required> <span>Je demande l'accès immédiat au service. Si j'exerce mon droit de rétractation de 14 jours, je paierai le service fourni jusqu'à cette date.</span></label>
+    <p class="error" id="subscribe-error"></p>
+    <div class="row"><button type="submit">Continuer</button><button type="button" class="link" id="subscribe-cancel">Annuler</button></div>
+  </form>
+</dialog>
 
 <dialog id="auth">
   <form id="auth-form" method="dialog">

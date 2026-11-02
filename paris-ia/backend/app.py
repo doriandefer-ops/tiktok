@@ -130,19 +130,21 @@ def matches(request: Request):
         keep = {"league", "league_name", "date", "time", "home", "away", "probs", "slug"}
         payload["matches"] = [{k: v for k, v in m.items() if k in keep} | {"locked": True}
                               for m in payload["matches"]]
+    for m in payload["matches"]:
+        m.pop("value", None)  # écarts modèle/cotes : usage interne seulement
     payload["plan"] = plan
     return payload
 
 
 @app.get("/api/track-record")
-def track_record(request: Request):
-    """Historique public : le bilan, gagnant ou perdant, est visible par tous."""
-    summary = json.loads((DATA / "backtest.json").read_text()) if (DATA / "backtest.json").exists() else {}
-    history = json.loads((DATA / "history.json").read_text()) if (DATA / "history.json").exists() else []
-    picks = [h for h in history if h["pick"]]
-    limit = None if PLANS[plan_of(request)] >= PLANS["pro"] else 30
-    recent = sorted(picks, key=lambda h: h["date"], reverse=True)[:limit]
-    return {"summary": summary, "picks": recent}
+def track_record():
+    """Bilan public de précision des probabilités, comparé au marché.
+
+    Volontairement sans sélections de paris, gains ou ROI : présenter les performances de paris
+    d'un service peut laisser croire qu'il augmente les chances de gagner (pratique réputée
+    trompeuse, sanctionnée par la DGCCRF en 2025)."""
+    s = json.loads((DATA / "backtest.json").read_text()) if (DATA / "backtest.json").exists() else {}
+    return {"summary": {"matches": s.get("matches"), "logloss": s.get("logloss"), "start": s.get("params", {}).get("start")}}
 
 
 class Subscription(BaseModel):
@@ -203,13 +205,27 @@ def apidump(request: Request, season: int = 2024):
     return out
 
 
+CGV_VERSION = "2026-11-03"
+
+
+class CheckoutConsent(BaseModel):
+    cgv: bool = False
+    immediate: bool = False
+
+
 @app.post("/api/checkout/{plan}")
-def checkout(plan: str, request: Request):
+def checkout(plan: str, request: Request, consent: CheckoutConsent):
     u = current_user(request)
     if not u:
         raise HTTPException(401, "Connecte-toi d'abord.")
     if plan not in ("premium", "pro"):
         raise HTTPException(404)
+    if not (consent.cgv and consent.immediate):
+        raise HTTPException(400, "Coche les deux cases pour continuer.")
+    now = int(time.time())
+    for kind in ("cgv", "acces_immediat"):
+        db.insert("insert into consents (user_id, kind, version, created) values (?, ?, ?, ?)",
+                  (u["id"], kind, CGV_VERSION, now))
     if not STRIPE_KEY or not PRICES[plan]:
         # Mode démo : pas de clés Stripe, l'offre est activée directement.
         db.run("update users set plan = ? where id = ?", (plan, u["id"]))
@@ -226,6 +242,22 @@ def checkout(plan: str, request: Request):
         cancel_url=f"{SITE_URL}/#offres",
     )
     return {"url": session.url}
+
+
+@app.post("/api/billing/portal")
+def billing_portal(request: Request):
+    """Gérer ou résilier son abonnement (résiliation en ligne obligatoire, art. L. 215-1-1 C. conso)."""
+    u = current_user(request)
+    if not u:
+        raise HTTPException(401, "Connecte-toi d'abord.")
+    if STRIPE_KEY and u["stripe_customer"]:
+        import stripe
+        stripe.api_key = STRIPE_KEY
+        session = stripe.billing_portal.Session.create(customer=u["stripe_customer"], return_url=f"{SITE_URL}/")
+        return {"url": session.url}
+    # Mode démo (ou abonnement sans client Stripe) : résiliation immédiate.
+    db.run("update users set plan = 'free' where id = ?", (u["id"],))
+    return {"url": "/?resilie=1"}
 
 
 @app.post("/api/stripe/webhook")

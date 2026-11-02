@@ -12,6 +12,9 @@ SCHEMA = [
         plan text not null default 'free', stripe_customer text, created bigint not null)""",
     """create table if not exists newsletter (
         id {pk}, email text unique not null, created bigint not null, source text)""",
+    # Preuve des consentements donnés à la souscription (CGV, demande d'accès immédiat).
+    """create table if not exists consents (
+        id {pk}, user_id bigint not null, kind text not null, version text not null, created bigint not null)""",
 ]
 
 

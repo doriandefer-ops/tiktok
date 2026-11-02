@@ -20,8 +20,14 @@ function renderAccount() {
     $("#login-btn").onclick = () => openAuth(false);
     $("#signup-btn").onclick = () => openAuth(true);
   } else {
-    el.innerHTML = `<span class="badge">${me.plan}</span><span class="muted">${me.email}</span><button class="ghost" id="logout-btn">Déconnexion</button>`;
+    el.innerHTML = `<span class="badge">${me.plan}</span><span class="muted">${me.email}</span>`
+      + (me.plan !== "free" ? `<button class="ghost" id="manage-btn">Gérer ou résilier mon abonnement</button>` : "")
+      + `<button class="ghost" id="logout-btn">Déconnexion</button>`;
     $("#logout-btn").onclick = async () => { await api("/api/logout", { method: "POST" }); location.reload(); };
+    if ($("#manage-btn")) $("#manage-btn").onclick = async () => {
+      if (!me.stripe && !confirm("Résilier ton abonnement maintenant ?")) return;
+      location.href = (await api("/api/billing/portal", { method: "POST" })).url;
+    };
   }
 }
 
@@ -47,13 +53,27 @@ $("#auth-form").onsubmit = async (e) => {
   } catch (err) { $("#auth-error").textContent = err.message; }
 };
 
+let chosenPlan = null;
 document.querySelectorAll("[data-plan]").forEach((b) => {
-  b.onclick = async () => {
+  b.onclick = () => {
     if (!me.email) return openAuth(true);
-    try { location.href = (await api(`/api/checkout/${b.dataset.plan}`, { method: "POST" })).url; }
-    catch (err) { alert(err.message); }
+    chosenPlan = b.dataset.plan;
+    $("#subscribe-title").textContent = `Abonnement ${chosenPlan === "pro" ? "Pro, 39,99 €" : "Premium, 19,99 €"} par mois`;
+    $("#subscribe-error").textContent = "";
+    $("#subscribe").showModal();
   };
 });
+$("#subscribe-cancel").onclick = () => $("#subscribe").close();
+$("#subscribe-form").onsubmit = async (e) => {
+  e.preventDefault();
+  const f = new FormData(e.target);
+  try {
+    const r = await api(`/api/checkout/${chosenPlan}`, {
+      method: "POST", body: JSON.stringify({ cgv: f.get("cgv") === "on", immediate: f.get("immediate") === "on" }),
+    });
+    location.href = r.url;
+  } catch (err) { $("#subscribe-error").textContent = err.message; }
+};
 
 function matchCard(m) {
   const p = m.probs;
@@ -100,41 +120,15 @@ async function loadMatches() {
   render();
 }
 
-function chart(byMonth) {
-  const months = Object.keys(byMonth).sort();
-  let cum = 0;
-  const pts = months.map((m) => (cum += byMonth[m].profit));
-  const W = 760, H = 220, pad = 40;
-  const lo = Math.min(0, ...pts), hi = Math.max(0, ...pts);
-  const x = (i) => pad + (i * (W - 2 * pad)) / Math.max(1, pts.length - 1);
-  const y = (v) => H - pad - ((v - lo) / (hi - lo || 1)) * (H - 2 * pad);
-  const path = pts.map((v, i) => `${i ? "L" : "M"}${x(i)},${y(v)}`).join("");
-  const labels = months.map((m, i) => `<text x="${x(i)}" y="${H - 14}" fill="#8b949e" font-size="11" text-anchor="middle">${m.slice(5)}/${m.slice(2, 4)}</text>`).join("");
-  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Gains cumulés en unités">
-    <text x="${pad}" y="22" fill="#e6edf3" font-size="13">Gains cumulés (mise de 1 unité par pari)</text>
-    <line x1="${pad}" x2="${W - pad}" y1="${y(0)}" y2="${y(0)}" stroke="#2a313c"/>
-    <path d="${path}" fill="none" stroke="${cum < 0 ? "#f85149" : "#3fb950"}" stroke-width="2"/>
-    <text x="${x(pts.length - 1)}" y="${y(cum) - 8}" fill="#e6edf3" font-size="12" text-anchor="end">${cum.toFixed(1)} u</text>
-    ${labels}</svg>`;
-}
-
 async function loadTrackRecord() {
-  const { summary: s, picks } = await api("/api/track-record");
+  const { summary: s } = await api("/api/track-record");
   if (!s.matches) return;
-  const cls = (v) => (v < 0 ? "neg" : "pos");
+  const ll = (v) => v.toFixed(3).replace(".", ",");
   $("#stats").innerHTML = `
-    <div class="stat"><span>Matchs analysés</span><b>${s.matches.toLocaleString("fr-FR")}</b></div>
-    <div class="stat"><span>Erreur du modèle seul (log-loss)</span><b>${s.logloss.p_model.toFixed(3).replace(".", ",")}</b></div>
-    <div class="stat"><span>Erreur du marché à la clôture</span><b>${s.logloss.p_close.toFixed(3).replace(".", ",")}</b></div>
-    <div class="stat"><span>Écarts signalés</span><b>${s.bets}</b></div>
-    <div class="stat"><span>Écarts réalisés</span><b>${pct(s.hit_rate)}</b></div>
-    <div class="stat"><span>ROI théorique (mise fixe)</span><b class="${cls(s.roi)}">${(s.roi * 100).toFixed(1)} %</b></div>
-    <div class="stat"><span>CLV moyen</span><b class="${cls(s.clv)}">${(s.clv * 100).toFixed(1)} %</b></div>`;
-  $("#chart").innerHTML = chart(s.by_month);
-  $("#picks tbody").innerHTML = picks.map((h) => `<tr>
-    <td>${h.date.split("-").reverse().join("/")}</td><td>${h.home} – ${h.away}</td>
-    <td>${h.pick.outcome === "draw" ? "Nul" : `Victoire ${h.pick.outcome === "home" ? h.home : h.away}`}</td><td>${pct(h.pick.p)}</td><td>${h.pick.odds.toFixed(2)}</td>
-    <td>${h.score}</td><td class="${h.pick.won ? "pos" : "neg"}">${h.pick.won ? "Réalisé" : "Non réalisé"}</td></tr>`).join("");
+    <div class="stat"><span>Matchs testés</span><b>${s.matches.toLocaleString("fr-FR")}</b></div>
+    <div class="stat"><span>Erreur du modèle seul</span><b>${ll(s.logloss.p_model)}</b></div>
+    <div class="stat"><span>Erreur des probabilités publiées</span><b>${ll(s.logloss.p_pub)}</b></div>
+    <div class="stat"><span>Erreur du marché à la clôture</span><b>${ll(s.logloss.p_close)}</b></div>`;
 }
 
 $("#newsletter-form").onsubmit = async (e) => {

@@ -84,3 +84,4 @@ mark { background: #3d2e00; color: #f2cc60; padding: 0 3px; border-radius: 3px; 
 .match-list { padding-left: 18px; }
 .match-list li { margin: 6px 0; }
 footer a { color: var(--muted); }
+@media (max-width: 600px) { #account { flex-wrap: wrap; justify-content: flex-end; } #manage-btn { font-size: 12px; padding: 6px 10px; } }
