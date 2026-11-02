@@ -136,7 +136,7 @@ def match_page(slug: str) -> str | None:
 {absences}
 <h2>Comment ces probabilités sont calculées</h2>
 <p>Un modèle statistique estime la force offensive et défensive de chaque équipe à partir des buts et des tirs cadrés des trois dernières saisons, puis combine son estimation (30 %) avec les probabilités du marché sans marge (70 %). Le <a href="/#bilan">bilan public</a> compare chaque estimation au résultat réel.</p>
-<div class="cta"><p>Probabilités de buts, scores les plus probables et compositions officielles avec l'offre Premium.</p><a class="button" href="/#offres">Voir les offres</a></div>"""
+<div class="cta"><p>Probabilités de buts, scores les plus probables et buts attendus avec l'offre Premium.</p><a class="button" href="/#offres">Voir les offres</a></div>"""
     return layout(title, desc, body, f"/match/{slug}",
                   f'<script type="application/ld+json">{jsonld}</script>')
 
