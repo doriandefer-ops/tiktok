@@ -121,6 +121,19 @@ class Plan(unittest.TestCase):
             self.assertEqual(api.used_today(), 1)
 
 
+class Compte(unittest.TestCase):
+    def test_compte_suspendu(self):
+        body = {"response": [], "errors": {"access": "Your account is suspended"}}
+        with tempfile.TemporaryDirectory() as d, mock.patch.object(api, "CACHE", pathlib.Path(d)), \
+                mock.patch.dict("os.environ", {"API_FOOTBALL_KEY": "test"}), \
+                mock.patch("urllib.request.urlopen") as op:
+            op.return_value.__enter__.return_value.read.return_value = json.dumps(body).encode()
+            for params in ({"league": 61, "season": 2024}, {"fixture": 1}, {"league": 39, "season": 2023}):
+                with self.assertRaises(api.PlanRestricted):
+                    api.get("injuries", params, 0)
+            self.assertEqual(op.call_count, 1)    # plus aucun appel après le premier refus
+
+
 class Budget(unittest.TestCase):
     def test_quota(self):
         with tempfile.TemporaryDirectory() as d, mock.patch.object(api, "CACHE", pathlib.Path(d)), \

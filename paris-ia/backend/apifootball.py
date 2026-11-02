@@ -34,17 +34,25 @@ def _blocked_file() -> pathlib.Path:
 
 def blocked(season) -> bool:
     f = _blocked_file()
-    if season is None or not f.exists():
+    if not f.exists():
         return False
     b = json.loads(f.read_text())
-    return b.get("day") == date.today().isoformat() and int(season) in b.get("seasons", [])
+    if b.get("day") != date.today().isoformat():
+        return False
+    return b.get("account", False) or (season is not None and int(season) in b.get("seasons", []))
 
 
 def _block(season) -> None:
     f = _blocked_file()
     b = json.loads(f.read_text()) if f.exists() else {}
     seasons = b.get("seasons", []) if b.get("day") == date.today().isoformat() else []
-    f.write_text(json.dumps({"day": date.today().isoformat(), "seasons": sorted(set(seasons) | {int(season)})}))
+    account = b.get("account", False) if b.get("day") == date.today().isoformat() else False
+    if season == "account":
+        account, new = True, set()
+    else:
+        new = {int(season)}
+    f.write_text(json.dumps({"day": date.today().isoformat(), "account": account,
+                             "seasons": sorted(set(seasons) | new)}))
 
 
 def key() -> str | None:
@@ -85,7 +93,7 @@ def call(endpoint: str, params: dict, ttl: float) -> dict:
     if not key():
         raise RuntimeError("API_FOOTBALL_KEY manquante")
     if blocked(params.get("season")):  # inutile de gaspiller le quota sur une saison refusée aujourd'hui
-        raise PlanRestricted(f"Saison {params['season']} non couverte par l'offre API-Football")
+        raise PlanRestricted("Appels API-Football suspendus pour aujourd'hui (compte ou saison refusés)")
     _spend()
     req = urllib.request.Request(f"{BASE}/{endpoint.strip('/')}?{query}",
                                  headers={"x-apisports-key": key()})
@@ -97,6 +105,9 @@ def call(endpoint: str, params: dict, ttl: float) -> dict:
             if params.get("season") is not None:
                 _block(params["season"])
             raise PlanRestricted(f"API-Football : {errors['plan']}")
+        if isinstance(errors, dict) and ("access" in errors or "token" in errors):
+            _block("account")  # compte suspendu ou clé invalide : plus aucun appel aujourd'hui
+            raise PlanRestricted(f"API-Football : {errors}")
         raise RuntimeError(f"API-Football : {errors}")
     path.write_text(json.dumps(body))
     return body
