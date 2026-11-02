@@ -43,6 +43,7 @@ LINEUPS = [{"team": {"id": PSG}, "startXI": [{"player": {"id": i}} for i in (2, 
 def fake_call(lineups):
     def call(endpoint, params, ttl):
         resp = {"fixtures": FIXTURES, "injuries": INJURIES, "players": PLAYERS,
+                "players/topscorers": PLAYERS[:2], "players/topassists": PLAYERS[1:],
                 "fixtures/lineups": lineups}[endpoint]
         return {"response": resp, "paging": {"current": 1, "total": 1}, "errors": []}
     return call
@@ -72,6 +73,12 @@ class Absences(unittest.TestCase):
         # Le défenseur incertain n'est pas titulaire : absent confirmé, poids plein.
         self.assertEqual({a["name"]: a["weight"] for a in ab}, {"Buteur": 1.0, "Défenseur": 1.0})
 
+    def test_liste_partielle(self):
+        # Avec seulement les meilleurs buteurs, la part d'un joueur se calcule sur 1,5 x les buts de l'équipe.
+        w = availability.importance(PLAYERS[:1], PSG, team_goals=40, team_games=20)
+        self.assertAlmostEqual(w[1]["att_share"], 10.4 / 60, places=3)
+        self.assertAlmostEqual(w[1]["min_share"], 900 / 1800, places=3)
+
     def test_multiplicateurs(self):
         w = availability.importance(PLAYERS, PSG)
         ab, _ = availability.absences(555, PSG, INJURIES, [], w)
@@ -97,6 +104,21 @@ class ForLeague(unittest.TestCase):
         base = model.markets(fit.score_matrix("A", "B"))
         adj = model.markets(fit.score_matrix("A", "B", 1.0, 0.75))
         self.assertGreater(adj["home"], base["home"])
+
+
+class Plan(unittest.TestCase):
+    def test_saison_refusee(self):
+        body = {"response": [], "errors": {"plan": "Free plans do not have access to this season"}}
+        with tempfile.TemporaryDirectory() as d, mock.patch.object(api, "CACHE", pathlib.Path(d)), \
+                mock.patch.dict("os.environ", {"API_FOOTBALL_KEY": "test"}), \
+                mock.patch("urllib.request.urlopen") as op:
+            op.return_value.__enter__.return_value.read.return_value = json.dumps(body).encode()
+            with self.assertRaises(api.PlanRestricted):
+                api.get("injuries", {"league": 61, "season": 2026}, 0)
+            with self.assertRaises(api.PlanRestricted):   # 2e fois : refusé sans appel réseau
+                api.get("fixtures", {"league": 39, "season": 2026}, 0)
+            self.assertEqual(op.call_count, 1)
+            self.assertEqual(api.used_today(), 1)
 
 
 class Budget(unittest.TestCase):

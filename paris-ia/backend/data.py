@@ -67,6 +67,16 @@ def results() -> pd.DataFrame:
     return df[keep].sort_values("Date").reset_index(drop=True)
 
 
+def team_totals(df: pd.DataFrame) -> dict:
+    """{équipe: (buts marqués, matchs joués)} sur les matchs donnés."""
+    out = {}
+    for side, goals in (("HomeTeam", "FTHG"), ("AwayTeam", "FTAG")):
+        for team, g in df.groupby(side)[goals]:
+            b, n = out.get(team, (0, 0))
+            out[team] = (b + int(g.sum()), n + len(g))
+    return out
+
+
 def fixtures() -> pd.DataFrame:
     path = RAW / "fixtures.csv"
     if not path.exists():

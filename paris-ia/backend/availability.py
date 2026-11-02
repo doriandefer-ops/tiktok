@@ -67,8 +67,11 @@ def match_fixture(api_fixtures: list, day: str, home: str, away: str):
     return best
 
 
-def importance(players_resp: list, team_id: int) -> dict:
-    """Poids de chaque joueur de l'équipe : part des minutes et part de la production offensive."""
+def importance(players_resp: list, team_id: int, team_goals: float | None = None, team_games: int | None = None) -> dict:
+    """Poids de chaque joueur de l'équipe : part des minutes et part de la production offensive.
+
+    Avec une liste partielle (meilleurs buteurs et passeurs), passer `goals` et `games` de l'équipe
+    sur la même saison (`team_goals`, `team_games`) : la production totale est alors estimée à 1,5 x ses buts (buts + 0,7 x passes)."""
     rows = []
     for p in players_resp:
         for st in p.get("statistics", []):
@@ -79,8 +82,8 @@ def importance(players_resp: list, team_id: int) -> dict:
                          "pos": games.get("position") or "",
                          "minutes": games.get("minutes") or 0,
                          "att": (goals.get("total") or 0) + 0.7 * (goals.get("assists") or 0)})
-    max_min = max((r["minutes"] for r in rows), default=0) or 1
-    total_att = sum(r["att"] for r in rows) or 1
+    max_min = max([r["minutes"] for r in rows] + [90 * (team_games or 0)]) or 1
+    total_att = max(sum(r["att"] for r in rows), 1.5 * (team_goals or 0)) or 1
     return {r["id"]: {"name": r["name"], "pos": r["pos"], "min_share": r["minutes"] / max_min,
                       "att_share": r["att"] / total_att} for r in rows}
 
@@ -123,10 +126,11 @@ def multipliers(absent_home: list, absent_away: list, k_att: float = K_ATT, k_de
     return (1 - att_h) * (1 + def_a), (1 - att_a) * (1 + def_h)
 
 
-def for_league(code: str, games: list, season: int) -> dict:
+def for_league(code: str, games: list, season: int, team_stats: dict | None = None) -> dict:
     """Absences et multiplicateurs pour les matchs à venir d'un championnat.
 
-    `games` = liste de (date ISO, domicile, extérieur) au format football-data. Renvoie un dict
+    `games` = liste de (date ISO, domicile, extérieur) au format football-data ; `team_stats` =
+    {nom football-data: (buts, matchs)} sur la saison en cours. Renvoie un dict
     {(date, domicile, extérieur): info}. Les erreurs d'API (quota, clé) laissent le match sans ajustement."""
     league = api.LEAGUE_IDS[code]
     days = sorted(g[0] for g in games)
@@ -135,7 +139,7 @@ def for_league(code: str, games: list, season: int) -> dict:
     fx = api.fixtures(league, season, start, end)
     inj = api.injuries(league, season)
     try:
-        stats = api.players(league, season)
+        stats = api.key_players(league, season)
     except api.BudgetExceeded:
         stats = []  # absents affichés, mais sans poids : pas d'ajustement du modèle
     now = datetime.now(timezone.utc)
@@ -153,8 +157,9 @@ def for_league(code: str, games: list, season: int) -> dict:
             except api.BudgetExceeded:
                 pass
         hid, aid = f["teams"]["home"]["id"], f["teams"]["away"]["id"]
-        ab_h, lu_h = absences(fid, hid, inj, lu, importance(stats, hid))
-        ab_a, lu_a = absences(fid, aid, inj, lu, importance(stats, aid))
+        ts = team_stats or {}
+        ab_h, lu_h = absences(fid, hid, inj, lu, importance(stats, hid, *ts.get(home, (None, None))))
+        ab_a, lu_a = absences(fid, aid, inj, lu, importance(stats, aid, *ts.get(away, (None, None))))
         lam_m, mu_m = multipliers(ab_h, ab_a) if stats else (1.0, 1.0)
         out[(day, home, away)] = {"fixture": fid, "absent_home": ab_h, "absent_away": ab_a,
                                   "lineups": lu_h and lu_a, "weighted": bool(stats),

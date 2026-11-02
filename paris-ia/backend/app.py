@@ -164,6 +164,45 @@ def newsletter(s: Subscription):
     return {"ok": True}
 
 
+@app.get("/api/health")
+def health():
+    import apifootball
+    return {"db": "postgres" if db.DATABASE_URL else "sqlite", "api_key": bool(apifootball.key()),
+            "api_requests_today": apifootball.used_today()}
+
+
+@app.get("/api/admin/apidump")
+def apidump(request: Request, season: int = 2024):
+    """Données API-Football compactes d'une saison passée, pour calibrate.py (réservé à l'administrateur)."""
+    token = request.headers.get("x-admin-token", "")
+    if not hmac.compare_digest(token.encode(), SECRET):
+        raise HTTPException(403)
+    import apifootball as api
+    out = {"season": season, "leagues": {}}
+    for code, league in api.LEAGUE_IDS.items():
+        try:
+            fx = api.season_fixtures(league, season)
+            inj = api.injuries(league, season)
+            kp = api.key_players(league, season - 1)
+        except Exception as e:
+            out["leagues"][code] = {"error": str(e)}
+            continue
+        out["leagues"][code] = {
+            "fixtures": [{"fixture": {"id": f["fixture"]["id"], "date": f["fixture"]["date"]},
+                          "teams": {s: {"id": f["teams"][s]["id"], "name": f["teams"][s]["name"]} for s in ("home", "away")}}
+                         for f in fx],
+            "injuries": [{"player": {k: i["player"].get(k) for k in ("id", "name", "type", "reason")},
+                          "team": {"id": i["team"]["id"]}, "fixture": {"id": i["fixture"]["id"]}} for i in inj],
+            "key_players": [{"player": {"id": p["player"]["id"], "name": p["player"]["name"]},
+                             "statistics": [{"team": {"id": st["team"]["id"], "name": st["team"].get("name")},
+                                             "games": {k: st.get("games", {}).get(k) for k in ("position", "minutes")},
+                                             "goals": {k: st.get("goals", {}).get(k) for k in ("total", "assists")}}
+                                            for st in p.get("statistics", [])]} for p in kp],
+        }
+    out["requests_today"] = api.used_today()
+    return out
+
+
 @app.post("/api/checkout/{plan}")
 def checkout(plan: str, request: Request):
     u = current_user(request)

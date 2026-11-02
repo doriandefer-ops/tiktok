@@ -27,10 +27,12 @@ def run(download: bool = True) -> list:
         avail = {}
         if apifootball.key():
             keys = [(g["Date"].strftime("%Y-%m-%d"), g["HomeTeam"], g["AwayTeam"]) for _, g in games.iterrows()]
+            current = results[(results["Div"] == code) & (results["Season"] == data.SEASONS[-1])]
             try:
-                avail = availability.for_league(code, keys, apifootball.season_year(now.date()))
-            except Exception as e:  # quota, réseau, clé : on publie sans ajustement
-                print(f"{code} : absences indisponibles ({e})")
+                avail = availability.for_league(code, keys, apifootball.season_year(now.date()),
+                                                data.team_totals(current))
+            except Exception as e:  # quota, réseau, clé, offre : on publie sans ajustement
+                print(f"{code} : absences indisponibles ({e})", flush=True)
         for _, g in games.iterrows():
             info = avail.get((g["Date"].strftime("%Y-%m-%d"), g["HomeTeam"], g["AwayTeam"]))
             mk = model.markets(fit.score_matrix(g["HomeTeam"], g["AwayTeam"],
