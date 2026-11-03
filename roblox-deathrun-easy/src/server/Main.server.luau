@@ -6,6 +6,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Config = require(ReplicatedStorage:WaitForChild("DeathrunShared"):WaitForChild("Config"))
 local Generator = require(script.Parent:WaitForChild("LevelGenerator"))
+local Shop = require(script.Parent:WaitForChild("Shop"))
 
 Players.RespawnTime = 1
 
@@ -25,6 +26,7 @@ end
 local KillMe = newRemote("KillMe") -- client -> serveur : "j'ai touché un piège"
 local ChangeStage = newRemote("ChangeStage") -- client -> serveur : aller à un niveau déjà débloqué
 local Notify = newRemote("Notify") -- serveur -> client : message à afficher
+local SetPerk = newRemote("SetPerk") -- client -> serveur : activer / couper un Game Pass
 remotes.Parent = ReplicatedStorage
 
 ---------------------------------------------------------------------------
@@ -42,7 +44,7 @@ do
 	end
 end
 
-local sessions = {} -- [Player] = { stage, max, wins, loaded, busy, lastRequest, ... }
+local sessions = {} -- [Player] = { stage, max, wins, receipts, loaded, ready, busy, lastRequest, ... }
 local mapReady = false
 
 local function dataKey(player)
@@ -67,13 +69,14 @@ end
 local function saveData(player, session)
 	-- Si le chargement a échoué on n'écrase pas l'ancienne sauvegarde
 	if not store or not session.loaded then
-		return
+		return false
 	end
-	local payload = { stage = session.stage, max = session.max, wins = session.wins }
+	local payload = { stage = session.stage, max = session.max, wins = session.wins, receipts = session.receipts }
 	local ok, err = pcall(store.SetAsync, store, dataKey(player), payload)
 	if not ok then
 		warn("[Deathrun] Sauvegarde échouée pour " .. player.Name .. " :", err)
 	end
+	return ok
 end
 
 local function toStage(value, fallback)
@@ -111,11 +114,27 @@ local function teleportToStage(player, stage)
 	end
 end
 
+-- Achat "passer des niveaux"
+local function skipStages(player, count)
+	local session = sessions[player]
+	if not session then
+		return
+	end
+	session.stage = math.min(Config.TOTAL_STAGES, session.stage + count)
+	session.max = math.max(session.max, session.stage)
+	publish(player, session)
+	if mapReady then
+		teleportToStage(player, session.stage)
+	end
+end
+
 local function onCharacterAdded(player, character)
 	local root = character:WaitForChild("HumanoidRootPart", 10)
 	if not root then
 		return
 	end
+	character:WaitForChild("Humanoid", 10)
+	Shop.applyPerks(player, character)
 	while not mapReady do
 		task.wait(0.2)
 	end
@@ -171,7 +190,7 @@ end
 -- Joueurs
 ---------------------------------------------------------------------------
 local function onPlayerAdded(player)
-	local session = { stage = 1, max = 1, wins = 0, loaded = false, busy = false, lastRequest = 0 }
+	local session = { stage = 1, max = 1, wins = 0, receipts = {}, loaded = false, ready = false, busy = false, lastRequest = 0 }
 	sessions[player] = session
 
 	local leaderstats = Instance.new("Folder")
@@ -192,15 +211,25 @@ local function onPlayerAdded(player)
 		task.spawn(onCharacterAdded, player, player.Character)
 	end
 
+	Shop.onPlayerAdded(player)
+
 	local saved, ok = loadData(player)
 	if not player.Parent then
 		return
 	end
 	session.loaded = ok
+	session.ready = true
 	if type(saved) == "table" then
 		session.stage = toStage(saved.stage, 1)
 		session.max = math.max(session.stage, toStage(saved.max, 1))
 		session.wins = (type(saved.wins) == "number" and saved.wins >= 0) and math.floor(saved.wins) or 0
+		if type(saved.receipts) == "table" then
+			for _, id in saved.receipts do
+				if type(id) == "string" then
+					table.insert(session.receipts, id)
+				end
+			end
+		end
 		publish(player, session)
 		if mapReady and session.stage > 1 then
 			teleportToStage(player, session.stage)
@@ -246,6 +275,21 @@ end)
 ---------------------------------------------------------------------------
 -- Démarrage
 ---------------------------------------------------------------------------
+Shop.init({
+	getSession = function(player)
+		return sessions[player]
+	end,
+	skipStages = skipStages,
+	save = saveData,
+	canSave = function(session)
+		return store ~= nil and session.loaded
+	end,
+	notify = function(player, message)
+		Notify:FireClient(player, message)
+	end,
+	setPerkRemote = SetPerk,
+})
+
 CollectionService:GetInstanceAddedSignal(Config.TAGS.Finish):Connect(function(part)
 	part.Touched:Connect(function(hit)
 		onFinishTouched(part, hit)

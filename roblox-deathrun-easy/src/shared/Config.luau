@@ -15,6 +15,22 @@ Config.MAP_NAME = "DeathrunMap"
 Config.REMOTES_NAME = "DeathrunRemotes"
 Config.DATASTORE_NAME = "DeathrunEasy_v1"
 
+---------------------------------------------------------------------------
+-- BOUTIQUE : colle ici les numéros (ID) de tes articles créés sur Roblox (voir README).
+-- Tant qu'un ID vaut 0, l'article s'affiche "pas encore disponible".
+---------------------------------------------------------------------------
+Config.PRODUCTS = { -- Produits développeur (achetables plusieurs fois)
+	SkipStage = { id = 0, stages = 1, name = "Passer le niveau", icon = "⏭" },
+	Skip10 = { id = 0, stages = 10, name = "Passer 10 niveaux", icon = "⏩" },
+}
+Config.GAMEPASSES = { -- Game Pass (achetés une seule fois, pour toujours)
+	Speed = { id = 0, name = "Vitesse ×2", icon = "⚡" },
+	Trail = { id = 0, name = "Traînée arc-en-ciel", icon = "🌈" },
+}
+Config.SHOP_ORDER = { "SkipStage", "Skip10", "Speed", "Trail" }
+Config.SPEED_BOOST = 32 -- vitesse avec le Game Pass (normale : 16)
+Config.DEATHS_BEFORE_HINT = 3 -- après 3 morts sur le même niveau : "Bloqué ? Passe le niveau !"
+
 Config.TAGS = {
 	Kill = "DR_Kill", -- touche = mort
 	Finish = "DR_Finish", -- fin du niveau (checkpoint)

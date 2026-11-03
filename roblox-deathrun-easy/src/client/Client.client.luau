@@ -354,7 +354,7 @@ maxButton.Activated:Connect(function()
 end)
 
 local toastId = 0
-Notify.OnClientEvent:Connect(function(message)
+local function showToast(message)
 	toastId += 1
 	local id = toastId
 	toast.Text = message
@@ -365,4 +365,244 @@ Notify.OnClientEvent:Connect(function(message)
 			TweenService:Create(toast, TweenInfo.new(0.6), { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
 		end
 	end)
+end
+Notify.OnClientEvent:Connect(showToast)
+
+---------------------------------------------------------------------------
+-- Boutique
+---------------------------------------------------------------------------
+local MarketplaceService = game:GetService("MarketplaceService")
+local SetPerk = remotes:WaitForChild("SetPerk")
+
+local function shopItem(key)
+	local product = Config.PRODUCTS[key]
+	if product then
+		return product, "product"
+	end
+	return Config.GAMEPASSES[key], "pass"
+end
+
+local function buy(key)
+	local item, kind = shopItem(key)
+	if not item or item.id == 0 then
+		showToast("Cet article n'est pas encore disponible")
+		warn("[Deathrun] Mets l'ID de " .. key .. " dans Config.luau (voir README)")
+		return
+	end
+	if kind == "product" then
+		MarketplaceService:PromptProductPurchase(player, item.id)
+	else
+		MarketplaceService:PromptGamePassPurchase(player, item.id)
+	end
+end
+
+-- Boutons sur le côté gauche (loin du bouton de saut sur mobile)
+local sideButtons = create("Frame", {
+	AnchorPoint = Vector2.new(0, 0.5),
+	Position = UDim2.new(0, 10, 0.5, 0),
+	Size = UDim2.fromOffset(120, 100),
+	BackgroundTransparency = 1,
+	Parent = gui,
+}, { create("UIListLayout", { Padding = UDim.new(0, 8) }) })
+
+local function sideButton(text, color, order)
+	return create("TextButton", {
+		Size = UDim2.fromOffset(120, 44),
+		LayoutOrder = order,
+		BackgroundColor3 = color,
+		Font = Enum.Font.GothamBlack,
+		TextScaled = true,
+		TextColor3 = Color3.new(1, 1, 1),
+		Text = text,
+		Parent = sideButtons,
+	}, {
+		corner(12),
+		create("UIPadding", { PaddingTop = UDim.new(0, 8), PaddingBottom = UDim.new(0, 8), PaddingLeft = UDim.new(0, 6), PaddingRight = UDim.new(0, 6) }),
+		create("UIStroke", { Thickness = 2, Color = Color3.new(1, 1, 1), Transparency = 0.6, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }),
+	})
+end
+
+local skipButton = sideButton("⏭ Passer", Color3.fromRGB(255, 120, 40), 1)
+local shopButton = sideButton("🛒 Boutique", Color3.fromRGB(70, 140, 255), 2)
+local skipScale = create("UIScale", { Parent = skipButton })
+
+skipButton.Activated:Connect(function()
+	buy("SkipStage")
 end)
+
+-- Fenêtre de la boutique
+local shopFrame = create("Frame", {
+	AnchorPoint = Vector2.new(0.5, 0.5),
+	Position = UDim2.fromScale(0.5, 0.55),
+	Size = UDim2.fromScale(0.9, 0.8),
+	BackgroundColor3 = Color3.fromRGB(25, 25, 38),
+	Visible = false,
+	Parent = gui,
+}, {
+	corner(16),
+	create("UISizeConstraint", { MaxSize = Vector2.new(360, 330) }),
+	create("UIStroke", { Thickness = 2, Color = Color3.fromRGB(70, 140, 255) }),
+})
+
+create("TextLabel", {
+	Position = UDim2.fromOffset(16, 10),
+	Size = UDim2.new(1, -70, 0, 36),
+	BackgroundTransparency = 1,
+	Font = Enum.Font.GothamBlack,
+	TextScaled = true,
+	TextXAlignment = Enum.TextXAlignment.Left,
+	TextColor3 = Color3.new(1, 1, 1),
+	Text = "🛒 Boutique",
+	Parent = shopFrame,
+})
+
+local closeButton = create("TextButton", {
+	AnchorPoint = Vector2.new(1, 0),
+	Position = UDim2.new(1, -10, 0, 10),
+	Size = UDim2.fromOffset(36, 36),
+	BackgroundColor3 = Color3.fromRGB(220, 60, 60),
+	Font = Enum.Font.GothamBlack,
+	TextScaled = true,
+	TextColor3 = Color3.new(1, 1, 1),
+	Text = "X",
+	Parent = shopFrame,
+}, { corner(10) })
+
+local list = create("ScrollingFrame", {
+	Position = UDim2.fromOffset(12, 56),
+	Size = UDim2.new(1, -24, 1, -68),
+	BackgroundTransparency = 1,
+	BorderSizePixel = 0,
+	ScrollBarThickness = 4,
+	CanvasSize = UDim2.new(),
+	AutomaticCanvasSize = Enum.AutomaticSize.Y,
+	Parent = shopFrame,
+}, { create("UIListLayout", { Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder }) })
+
+local rowButtons = {} -- [key] = bouton d'achat
+
+local function priceText(key)
+	local item, kind = shopItem(key)
+	if item.id == 0 then
+		return "Bientôt"
+	end
+	local ok, info = pcall(function()
+		return MarketplaceService:GetProductInfo(item.id, kind == "product" and Enum.InfoType.Product or Enum.InfoType.GamePass)
+	end)
+	if ok and info and info.PriceInRobux then
+		return "R$ " .. info.PriceInRobux
+	end
+	return "Acheter"
+end
+
+local function refreshShopRow(key)
+	local button = rowButtons[key]
+	local _, kind = shopItem(key)
+	if kind == "pass" and player:GetAttribute("Pass_" .. key) then
+		local on = player:GetAttribute("Perk_" .. key) == true
+		button.Text = on and "Activé ✅" or "Désactivé"
+		button.BackgroundColor3 = on and Color3.fromRGB(50, 180, 80) or Color3.fromRGB(90, 90, 110)
+	elseif button:GetAttribute("Price") then
+		button.Text = button:GetAttribute("Price")
+	end
+end
+
+for order, key in Config.SHOP_ORDER do
+	local item, kind = shopItem(key)
+	if item then
+		local row = create("Frame", {
+			LayoutOrder = order,
+			Size = UDim2.new(1, -6, 0, 56),
+			BackgroundColor3 = Color3.fromRGB(40, 40, 58),
+			Parent = list,
+		}, { corner(12) })
+		create("TextLabel", {
+			Position = UDim2.fromOffset(12, 8),
+			Size = UDim2.new(1, -140, 0, 40),
+			BackgroundTransparency = 1,
+			Font = Enum.Font.GothamBold,
+			TextScaled = true,
+			TextXAlignment = Enum.TextXAlignment.Left,
+			TextColor3 = Color3.new(1, 1, 1),
+			Text = item.icon .. " " .. item.name,
+			Parent = row,
+		})
+		local button = create("TextButton", {
+			AnchorPoint = Vector2.new(1, 0.5),
+			Position = UDim2.new(1, -8, 0.5, 0),
+			Size = UDim2.fromOffset(110, 40),
+			BackgroundColor3 = Color3.fromRGB(50, 180, 80),
+			Font = Enum.Font.GothamBlack,
+			TextScaled = true,
+			TextColor3 = Color3.new(1, 1, 1),
+			Text = "...",
+			Parent = row,
+		}, { corner(10), create("UIPadding", { PaddingTop = UDim.new(0, 8), PaddingBottom = UDim.new(0, 8) }) })
+		rowButtons[key] = button
+
+		button.Activated:Connect(function()
+			if kind == "pass" and player:GetAttribute("Pass_" .. key) then
+				SetPerk:FireServer(key, not player:GetAttribute("Perk_" .. key))
+			else
+				buy(key)
+			end
+		end)
+		if kind == "pass" then
+			player:GetAttributeChangedSignal("Pass_" .. key):Connect(function()
+				refreshShopRow(key)
+			end)
+			player:GetAttributeChangedSignal("Perk_" .. key):Connect(function()
+				refreshShopRow(key)
+			end)
+		end
+		task.spawn(function()
+			button:SetAttribute("Price", priceText(key))
+			refreshShopRow(key)
+		end)
+	end
+end
+
+shopButton.Activated:Connect(function()
+	shopFrame.Visible = not shopFrame.Visible
+end)
+closeButton.Activated:Connect(function()
+	shopFrame.Visible = false
+end)
+
+-- Pas de "passer le niveau" au dernier niveau
+local function refreshSkip()
+	skipButton.Visible = (player:GetAttribute("Stage") or 1) < Config.TOTAL_STAGES
+end
+player:GetAttributeChangedSignal("Stage"):Connect(refreshSkip)
+refreshSkip()
+
+-- "Bloqué ?" : après plusieurs morts sur le même niveau, on met en avant le bouton Passer
+local deathStage, deathCount = 0, 0
+local function pulseSkip()
+	for _ = 1, 3 do
+		TweenService:Create(skipScale, TweenInfo.new(0.25), { Scale = 1.2 }):Play()
+		task.wait(0.25)
+		TweenService:Create(skipScale, TweenInfo.new(0.25), { Scale = 1 }):Play()
+		task.wait(0.25)
+	end
+end
+
+local function watchDeaths(character)
+	local humanoid = character:WaitForChild("Humanoid")
+	humanoid.Died:Connect(function()
+		local stage = player:GetAttribute("Stage") or 1
+		if stage == deathStage then
+			deathCount += 1
+		else
+			deathStage, deathCount = stage, 1
+		end
+		if deathCount % Config.DEATHS_BEFORE_HINT == 0 and stage < Config.TOTAL_STAGES then
+			showToast("Bloqué ? ⏭ Passe le niveau !")
+			task.spawn(pulseSkip)
+		end
+	end)
+end
+player.CharacterAdded:Connect(watchDeaths)
+if player.Character then
+	task.spawn(watchDeaths, player.Character)
+end

@@ -37,6 +37,30 @@ Dans un nouveau projet « Baseplate » :
 Les noms des dossiers et des scripts doivent être exactement ceux-là.
 Avec [Rojo](https://rojo.space), `rojo serve` utilise directement `default.project.json`.
 
+## Boutique (gagner des Robux)
+Le jeu contient déjà :
+- un bouton **⏭ Passer** (côté gauche de l'écran) et une **🛒 Boutique** ;
+- **Passer le niveau** et **Passer 10 niveaux** (produits développeur, achetables plusieurs fois) ;
+- les Game Pass **⚡ Vitesse ×2** et **🌈 Traînée arc-en-ciel** (achetés pour toujours, et le
+  joueur peut les activer ou les couper dans la boutique) ;
+- un message **« Bloqué ? Passe le niveau ! »** après 3 morts sur le même niveau.
+
+Les achats sont vérifiés par le serveur. Un achat n'est jamais donné deux fois, même si Roblox renvoie le reçu.
+
+### Brancher tes articles (une seule fois)
+1. Publie le jeu : *Fichier → Publier sur Roblox*.
+2. Va sur **create.roblox.com → Créations → ton jeu → Monétisation**.
+3. **Produits développeur** → crée « Passer le niveau » (ex. 15 R$) et « Passer 10 niveaux » (ex. 89 R$).
+4. **Passes** → crée « Vitesse ×2 » (ex. 99 R$) et « Traînée arc-en-ciel » (ex. 49 R$), et mets-les **en vente**.
+5. Copie le numéro (ID) de chaque article et colle-le dans `src/shared/Config.luau` :
+   ```lua
+   SkipStage = { id = 123456789, ... },
+   ```
+6. Relance `python3 build_place.py`, rouvre le fichier dans Studio et republie.
+
+Tant qu'un ID vaut `0`, l'article affiche « Bientôt » au lieu d'un prix. Dans Studio, les achats
+sont des tests gratuits : tu peux tout essayer sans payer.
+
 ## Personnaliser
 Tout se règle dans `src/shared/Config.luau` :
 - `TOTAL_STAGES` — nombre de niveaux (500).
