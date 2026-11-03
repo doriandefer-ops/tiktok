@@ -1,0 +1,17 @@
+{
+  "name": "DeathrunEasy",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "DeathrunShared": { "$path": "src/shared" }
+    },
+    "ServerScriptService": {
+      "DeathrunServer": { "$path": "src/server" }
+    },
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "DeathrunClient": { "$path": "src/client" }
+      }
+    }
+  }
+}

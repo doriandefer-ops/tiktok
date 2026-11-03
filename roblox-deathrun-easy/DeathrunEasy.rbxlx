@@ -1,0 +1,1094 @@
+<roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.roblox.com/roblox.xsd" version="4"><Item class="ReplicatedStorage" referent="RBX00000003"><Properties><string name="Name">ReplicatedStorage</string></Properties><Item class="Folder" referent="RBX00000002"><Properties><string name="Name">DeathrunShared</string></Properties><Item class="ModuleScript" referent="RBX00000001"><Properties><string name="Name">Config</string><ProtectedString name="Source"><![CDATA[-- Config partagée entre le serveur et les joueurs (ModuleScript dans ReplicatedStorage)
+local Config = {}
+
+Config.TOTAL_STAGES = 500 -- nombre de niveaux
+Config.STAGES_PER_ROW = 25 -- niveaux par rangée (20 rangées de 25)
+Config.STAGE_LENGTH = 80 -- longueur d'un niveau (studs, axe X)
+Config.ROW_SPACING = 70 -- écart entre deux rangées (studs, axe Z)
+Config.BASE_HEIGHT = 50 -- hauteur des plateformes
+Config.START_SIZE = 16 -- plateforme de départ : de x = 0 à x = 16
+Config.FINISH_SIZE = 12 -- plateforme d'arrivée : de x = 64 à x = 76
+Config.FINISH_X = 70 -- centre de la plateforme d'arrivée
+Config.SEED = 2026 -- change ce nombre pour obtenir 500 autres niveaux
+
+Config.MAP_NAME = "DeathrunMap"
+Config.REMOTES_NAME = "DeathrunRemotes"
+Config.DATASTORE_NAME = "DeathrunEasy_v1"
+
+Config.TAGS = {
+	Kill = "DR_Kill", -- touche = mort
+	Finish = "DR_Finish", -- fin du niveau (checkpoint)
+	Spin = "DR_Spin", -- barre qui tourne
+	Move = "DR_Move", -- bloc qui fait des allers-retours
+	Fade = "DR_Fade", -- dalle qui disparaît
+	Laser = "DR_Laser", -- laser qui s'allume / s'éteint
+}
+
+-- Coin "début" du niveau : x = début de la plateforme de départ, y = dessus des plateformes, z = axe du chemin
+function Config.getStageOrigin(stage)
+	local index = stage - 1
+	local col = index % Config.STAGES_PER_ROW
+	local row = math.floor(index / Config.STAGES_PER_ROW)
+	return CFrame.new(col * Config.STAGE_LENGTH, Config.BASE_HEIGHT, row * Config.ROW_SPACING)
+end
+
+-- Point d'apparition du joueur sur un niveau, tourné vers la sortie (+X)
+function Config.getSpawnCFrame(stage)
+	return Config.getStageOrigin(stage)
+		* CFrame.new(Config.START_SIZE / 2, 3.5, 0)
+		* CFrame.Angles(0, -math.pi / 2, 0)
+end
+
+return Config
+]]></ProtectedString></Properties></Item></Item></Item><Item class="ServerScriptService" referent="RBX00000007"><Properties><string name="Name">ServerScriptService</string></Properties><Item class="Folder" referent="RBX00000006"><Properties><string name="Name">DeathrunServer</string></Properties><Item class="ModuleScript" referent="RBX00000004"><Properties><string name="Name">LevelGenerator</string><ProtectedString name="Source"><![CDATA[-- Génère les 500 niveaux au lancement du serveur (ModuleScript dans ServerScriptService)
+-- Chaque niveau : plateforme de départ (16 studs) -> zone d'obstacle (48 studs) -> plateforme d'arrivée verte.
+-- Tous les sauts sont calibrés pour un personnage par défaut (WalkSpeed 16, saut ~7 studs) :
+-- aucun trou ne dépasse 5,5 studs, donc tout reste "easy".
+local CollectionService = game:GetService("CollectionService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local Config = require(ReplicatedStorage:WaitForChild("DeathrunShared"):WaitForChild("Config"))
+local TAGS = Config.TAGS
+
+local ZONE_START = Config.START_SIZE -- 16
+local ZONE_END = Config.FINISH_X - Config.FINISH_SIZE / 2 -- 64
+local ZONE_LEN = ZONE_END - ZONE_START -- 48
+local MAX_EASY_GAP = 5.5
+
+local KILL_COLOR = Color3.fromRGB(255, 45, 45)
+local FINISH_COLOR = Color3.fromRGB(60, 230, 90)
+local START_COLOR = Color3.fromRGB(235, 235, 245)
+local DARK_COLOR = Color3.fromRGB(45, 45, 55)
+
+local Generator = {}
+
+---------------------------------------------------------------------------
+-- Outils de construction
+---------------------------------------------------------------------------
+
+local function applyProps(part, ctx, size, localCFrame, props)
+	part.Anchored = true
+	part.TopSurface = Enum.SurfaceType.Smooth
+	part.BottomSurface = Enum.SurfaceType.Smooth
+	part.Material = Enum.Material.SmoothPlastic
+	part.Color = ctx.color
+	part.Size = size
+	part.CFrame = ctx.origin * localCFrame
+
+	local tags = nil
+	if props then
+		for key, value in props do
+			if key == "Tags" then
+				tags = value
+			elseif key == "Attributes" then
+				for name, attr in value do
+					part:SetAttribute(name, attr)
+				end
+			else
+				part[key] = value
+			end
+		end
+	end
+
+	if tags then
+		for _, tag in tags do
+			CollectionService:AddTag(part, tag)
+		end
+		-- Les pièces animées gardent leur position de départ pour que les joueurs les animent
+		if table.find(tags, TAGS.Spin) or table.find(tags, TAGS.Move) then
+			part:SetAttribute("BaseCF", part.CFrame)
+		end
+	end
+
+	-- Parent en dernier : tags + attributs sont répliqués en même temps que la pièce
+	part.Parent = ctx.folder
+	return part
+end
+
+local function makePart(ctx, size, localCFrame, props)
+	return applyProps(Instance.new("Part"), ctx, size, localCFrame, props)
+end
+
+-- Plateforme dont le dessus est à la hauteur `top` (repère local du niveau)
+local function platform(ctx, x0, x1, z, width, top, props)
+	return makePart(ctx, Vector3.new(x1 - x0, 1, width), CFrame.new((x0 + x1) / 2, top - 0.5, z), props)
+end
+
+local function killPart(ctx, size, localCFrame, props)
+	local merged = {
+		Name = "Kill",
+		Color = KILL_COLOR,
+		Material = Enum.Material.Neon,
+		Tags = { TAGS.Kill },
+	}
+	if props then
+		for key, value in props do
+			merged[key] = value
+		end
+	end
+	return makePart(ctx, size, localCFrame, merged)
+end
+
+-- Répartit n plateformes de taille `size` sur toute la zone, avec des trous réguliers <= maxGap
+local function fitRow(size, wantedGap, maxGap)
+	local n = math.max(1, math.floor((ZONE_LEN - wantedGap) / (size + wantedGap)))
+	local gap = (ZONE_LEN - n * size) / (n + 1)
+	while gap > maxGap do
+		n += 1
+		gap = (ZONE_LEN - n * size) / (n + 1)
+	end
+	return n, gap
+end
+
+local function addLabel(part, text)
+	local billboard = Instance.new("BillboardGui")
+	billboard.Name = "StageLabel"
+	billboard.Size = UDim2.fromScale(10, 3)
+	billboard.StudsOffset = Vector3.new(0, 7, 0)
+	billboard.MaxDistance = 90
+
+	local label = Instance.new("TextLabel")
+	label.Size = UDim2.fromScale(1, 1)
+	label.BackgroundTransparency = 1
+	label.Text = text
+	label.TextScaled = true
+	label.Font = Enum.Font.GothamBlack
+	label.TextColor3 = Color3.new(1, 1, 1)
+	label.TextStrokeTransparency = 0.2
+	label.Parent = billboard
+
+	billboard.Parent = part
+end
+
+---------------------------------------------------------------------------
+-- Obstacles (d = difficulté de 0 au niveau 1 à 1 au niveau 500, toujours facile)
+---------------------------------------------------------------------------
+
+local Obstacles = {}
+
+-- Sauts de plateforme en plateforme
+function Obstacles.jumps(ctx)
+	local d, rng = ctx.d, ctx.rng
+	local size = 7 - 2 * d
+	local n, gap = fitRow(size, 3 + 2 * d, MAX_EASY_GAP)
+	local x, z = ZONE_START, 0
+	for _ = 1, n do
+		x += gap
+		z = math.clamp(z + rng:NextNumber(-1, 1) * (1.5 + 2 * d), -4, 4)
+		platform(ctx, x, x + size, z, size, rng:NextNumber(0, 1.2))
+		x += size
+	end
+end
+
+-- Pont avec des petites barres rouges à sauter
+function Obstacles.hurdles(ctx)
+	local d, rng = ctx.d, ctx.rng
+	local width = 8 - 3 * d
+	platform(ctx, ZONE_START, ZONE_END, 0, width, 0)
+	local count = 2 + math.floor(3 * d + rng:NextNumber(0, 0.99))
+	local height = 1 + 0.5 * d
+	for i = 1, count do
+		local x = ZONE_START + ZONE_LEN * i / (count + 1)
+		killPart(ctx, Vector3.new(1, height, width), CFrame.new(x, height / 2, 0))
+	end
+end
+
+-- Barres qui tournent au ras du sol : il faut sauter par-dessus
+function Obstacles.spinners(ctx)
+	local d, rng = ctx.d, ctx.rng
+	local width = 14
+	platform(ctx, ZONE_START, ZONE_END, 0, width, 0)
+	local count = 1 + (d > 0.35 and 1 or 0) + (d > 0.75 and 1 or 0)
+	local barLength = math.min(width - 1, ZONE_LEN / (count + 1) - 1)
+	for i = 1, count do
+		local x = ZONE_START + ZONE_LEN * i / (count + 1)
+		local direction = rng:NextNumber() < 0.5 and -1 or 1
+		makePart(ctx, Vector3.new(1.2, 0.4, 1.2), CFrame.new(x, 0.2, 0), { Name = "Hub", Color = DARK_COLOR })
+		killPart(ctx, Vector3.new(1, 1, barLength), CFrame.new(x, 1, 0), {
+			Name = "Spinner",
+			CanCollide = false,
+			Tags = { TAGS.Kill, TAGS.Spin },
+			Attributes = {
+				Speed = (1 + 1.5 * d) * direction, -- radians / seconde
+				Phase = rng:NextNumber(0, math.pi * 2),
+			},
+		})
+	end
+end
+
+-- Blocs rouges qui glissent de gauche à droite
+function Obstacles.movers(ctx)
+	local d, rng = ctx.d, ctx.rng
+	local width = 10
+	platform(ctx, ZONE_START, ZONE_END, 0, width, 0)
+	local count = 2 + math.floor(2 * d + rng:NextNumber(0, 0.99))
+	local period = 4 - 1.5 * d
+	for i = 1, count do
+		local x = ZONE_START + ZONE_LEN * i / (count + 1)
+		killPart(ctx, Vector3.new(3, 3, 3), CFrame.new(x, 1.5, 0), {
+			Name = "Mover",
+			CanCollide = false,
+			Tags = { TAGS.Kill, TAGS.Move },
+			Attributes = {
+				Amplitude = Vector3.new(0, 0, (width - 3) / 2),
+				Period = period,
+				Phase = rng:NextNumber(),
+			},
+		})
+	end
+end
+
+-- Dalles qui clignotent puis disparaissent un instant
+function Obstacles.faders(ctx)
+	local d = ctx.d
+	local size = 6 - d
+	local n, gap = fitRow(size, 1.5, 2.5)
+	local x = ZONE_START
+	for i = 1, n do
+		x += gap
+		platform(ctx, x, x + size, 0, size, 0, {
+			Name = "Fader",
+			Color = ctx.color:Lerp(Color3.new(1, 1, 1), 0.35),
+			Tags = { TAGS.Fade },
+			Attributes = {
+				Period = 4,
+				OnFraction = 0.7 - 0.15 * d,
+				Phase = i * 0.15,
+			},
+		})
+		x += size
+	end
+end
+
+-- Murs laser qui s'allument et s'éteignent
+function Obstacles.lasers(ctx)
+	local d, rng = ctx.d, ctx.rng
+	local width = 8
+	platform(ctx, ZONE_START, ZONE_END, 0, width, 0)
+	local count = 2 + math.floor(2 * d + rng:NextNumber(0, 0.99))
+	for i = 1, count do
+		local x = ZONE_START + ZONE_LEN * i / (count + 1)
+		for side = -1, 1, 2 do
+			makePart(ctx, Vector3.new(1, 9, 1), CFrame.new(x, 4.5, side * (width / 2 + 0.5)), {
+				Name = "LaserPost",
+				Color = DARK_COLOR,
+			})
+		end
+		killPart(ctx, Vector3.new(0.4, 8, width), CFrame.new(x, 4, 0), {
+			Name = "Laser",
+			CanCollide = false,
+			Transparency = 0.2,
+			Tags = { TAGS.Kill, TAGS.Laser },
+			Attributes = {
+				Period = 3,
+				OnFraction = 0.4 + 0.2 * d,
+				Phase = rng:NextNumber(),
+			},
+		})
+	end
+end
+
+-- Escalier qui monte puis redescend
+function Obstacles.stairs(ctx)
+	local d, rng = ctx.d, ctx.rng
+	local width = 6
+	local rise = 1.5
+	local stepLen = 4
+	local function column(x0, x1, top)
+		makePart(ctx, Vector3.new(x1 - x0, top + 1, width), CFrame.new((x0 + x1) / 2, (top - 1) / 2, 0))
+	end
+	local x = ZONE_START
+	for i = 1, 5 do
+		column(x, x + stepLen, i * rise)
+		x += stepLen
+	end
+	column(x, x + 8, 6 * rise)
+	if d > 0.3 then
+		killPart(ctx, Vector3.new(1, 1, width), CFrame.new(x + 4, 6 * rise + 0.5, 0))
+	end
+	x += 8
+	for i = 5, 1, -1 do
+		column(x, x + stepLen, i * rise)
+		x += stepLen
+	end
+	-- petit bonus visuel
+	if rng:NextNumber() < 0.5 then
+		makePart(ctx, Vector3.new(1, 3, 1), CFrame.new(ZONE_START + 24, 6 * rise + 1.5, width / 2 - 0.5), {
+			Name = "Deco",
+			Material = Enum.Material.Neon,
+		})
+	end
+end
+
+-- Poutres étroites en zigzag
+function Obstacles.zigzag(ctx)
+	local d = ctx.d
+	local width = 3.4 - 0.8 * d
+	local segment = 8
+	for i = 0, ZONE_LEN / segment - 1 do
+		local x0 = ZONE_START + i * segment
+		local z = (i % 2 == 0) and -0.8 or 0.8
+		platform(ctx, x0, x0 + segment, z, width, 0)
+	end
+end
+
+local EASY_START = { "jumps", "hurdles", "stairs" }
+local ALL_OBSTACLES = { "jumps", "hurdles", "spinners", "movers", "faders", "lasers", "stairs", "zigzag" }
+
+local function pickObstacle(stage, rng, previous)
+	local pool = stage <= 10 and EASY_START or ALL_OBSTACLES
+	local choice
+	repeat
+		choice = pool[rng:NextInteger(1, #pool)]
+	until choice ~= previous
+	return choice
+end
+
+---------------------------------------------------------------------------
+-- Niveaux
+---------------------------------------------------------------------------
+
+local function buildStage(stage, map, previous)
+	local model = Instance.new("Model")
+	model.Name = "Stage" .. stage
+
+	local rng = Random.new(stage * 7919 + Config.SEED)
+	local ctx = {
+		origin = Config.getStageOrigin(stage),
+		folder = model,
+		rng = rng,
+		d = (stage - 1) / math.max(1, Config.TOTAL_STAGES - 1),
+		color = Color3.fromHSV(((stage - 1) * 0.037) % 1, 0.6, 0.95),
+	}
+
+	-- Départ (le niveau 1 sert aussi de SpawnLocation)
+	local start
+	if stage == 1 then
+		start = Instance.new("SpawnLocation")
+		start.Neutral = true
+		start.Duration = 0
+	else
+		start = Instance.new("Part")
+	end
+	applyProps(start, ctx, Vector3.new(Config.START_SIZE, 1, Config.START_SIZE), CFrame.new(Config.START_SIZE / 2, -0.5, 0), {
+		Name = "Start",
+		Color = START_COLOR,
+	})
+	addLabel(start, "Niveau " .. stage)
+
+	-- Obstacle
+	local obstacle = pickObstacle(stage, rng, previous)
+	Obstacles[obstacle](ctx)
+	model:SetAttribute("Obstacle", obstacle)
+
+	-- Arrivée
+	makePart(ctx, Vector3.new(Config.FINISH_SIZE, 1, Config.FINISH_SIZE), CFrame.new(Config.FINISH_X, -0.5, 0), {
+		Name = "Finish",
+		Color = FINISH_COLOR,
+		Material = Enum.Material.Neon,
+		Tags = { TAGS.Finish },
+		Attributes = { Stage = stage },
+	})
+
+	model.Parent = map
+	return obstacle
+end
+
+local function buildLava(map)
+	local rows = math.ceil(Config.TOTAL_STAGES / Config.STAGES_PER_ROW)
+	local length = Config.STAGES_PER_ROW * Config.STAGE_LENGTH + 40 -- 2040 studs (max Roblox : 2048)
+	for row = 0, rows - 1 do
+		local lava = Instance.new("Part")
+		lava.Name = "Lava"
+		lava.Anchored = true
+		lava.Size = Vector3.new(length, 2, Config.ROW_SPACING)
+		lava.CFrame = CFrame.new(length / 2 - 20, Config.BASE_HEIGHT - 30, row * Config.ROW_SPACING)
+		lava.Material = Enum.Material.CrackedLava
+		lava.Color = Color3.fromRGB(255, 90, 20)
+		CollectionService:AddTag(lava, TAGS.Kill)
+		lava.Parent = map
+	end
+end
+
+function Generator.build()
+	local existing = workspace:FindFirstChild(Config.MAP_NAME)
+	if existing then
+		existing:Destroy()
+	end
+
+	local map = Instance.new("Folder")
+	map.Name = Config.MAP_NAME
+	map.Parent = workspace
+
+	buildLava(map)
+
+	local previous = nil
+	for stage = 1, Config.TOTAL_STAGES do
+		previous = buildStage(stage, map, previous)
+		if stage % 10 == 0 then
+			task.wait() -- évite de bloquer le serveur pendant la génération
+		end
+	end
+	return map
+end
+
+Generator.Obstacles = Obstacles
+return Generator
+]]></ProtectedString></Properties></Item><Item class="Script" referent="RBX00000005"><Properties><string name="Name">Main</string><ProtectedString name="Source"><![CDATA[-- Serveur : génère la carte, gère la progression, les checkpoints et la sauvegarde
+local Players = game:GetService("Players")
+local DataStoreService = game:GetService("DataStoreService")
+local CollectionService = game:GetService("CollectionService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local Config = require(ReplicatedStorage:WaitForChild("DeathrunShared"):WaitForChild("Config"))
+local Generator = require(script.Parent:WaitForChild("LevelGenerator"))
+
+Players.RespawnTime = 1
+
+---------------------------------------------------------------------------
+-- RemoteEvents
+---------------------------------------------------------------------------
+local remotes = Instance.new("Folder")
+remotes.Name = Config.REMOTES_NAME
+
+local function newRemote(name)
+	local remote = Instance.new("RemoteEvent")
+	remote.Name = name
+	remote.Parent = remotes
+	return remote
+end
+
+local KillMe = newRemote("KillMe") -- client -> serveur : "j'ai touché un piège"
+local ChangeStage = newRemote("ChangeStage") -- client -> serveur : aller à un niveau déjà débloqué
+local Notify = newRemote("Notify") -- serveur -> client : message à afficher
+remotes.Parent = ReplicatedStorage
+
+---------------------------------------------------------------------------
+-- Sauvegarde
+---------------------------------------------------------------------------
+local store = nil
+do
+	local ok, result = pcall(function()
+		return DataStoreService:GetDataStore(Config.DATASTORE_NAME)
+	end)
+	if ok then
+		store = result
+	else
+		warn("[Deathrun] DataStore indisponible, la progression ne sera pas sauvegardée :", result)
+	end
+end
+
+local sessions = {} -- [Player] = { stage, max, wins, loaded, busy, lastRequest, ... }
+local mapReady = false
+
+local function dataKey(player)
+	return "player_" .. player.UserId
+end
+
+local function loadData(player)
+	if not store then
+		return nil, false
+	end
+	for attempt = 1, 3 do
+		local ok, result = pcall(store.GetAsync, store, dataKey(player))
+		if ok then
+			return result, true
+		end
+		warn("[Deathrun] Chargement échoué (essai " .. attempt .. ") :", result)
+		task.wait(attempt)
+	end
+	return nil, false
+end
+
+local function saveData(player, session)
+	-- Si le chargement a échoué on n'écrase pas l'ancienne sauvegarde
+	if not store or not session.loaded then
+		return
+	end
+	local payload = { stage = session.stage, max = session.max, wins = session.wins }
+	local ok, err = pcall(store.SetAsync, store, dataKey(player), payload)
+	if not ok then
+		warn("[Deathrun] Sauvegarde échouée pour " .. player.Name .. " :", err)
+	end
+end
+
+local function toStage(value, fallback)
+	if type(value) ~= "number" or value ~= value then
+		return fallback
+	end
+	return math.clamp(math.floor(value), 1, Config.TOTAL_STAGES)
+end
+
+---------------------------------------------------------------------------
+-- Progression
+---------------------------------------------------------------------------
+local function publish(player, session)
+	session.stageValue.Value = session.stage
+	session.winsValue.Value = session.wins
+	player:SetAttribute("Stage", session.stage)
+	player:SetAttribute("MaxStage", session.max)
+	player:SetAttribute("Wins", session.wins)
+end
+
+local function teleportToStage(player, stage)
+	local character = player.Character
+	local root = character and character:FindFirstChild("HumanoidRootPart")
+	if not root then
+		return
+	end
+	local target = Config.getSpawnCFrame(stage)
+	-- Avec StreamingEnabled, on charge le niveau chez le joueur avant de le téléporter
+	pcall(function()
+		player:RequestStreamAroundAsync(target.Position, 3)
+	end)
+	if character.Parent then
+		character:PivotTo(target)
+		root.AssemblyLinearVelocity = Vector3.zero
+	end
+end
+
+local function onCharacterAdded(player, character)
+	local root = character:WaitForChild("HumanoidRootPart", 10)
+	if not root then
+		return
+	end
+	while not mapReady do
+		task.wait(0.2)
+	end
+	task.wait(0.1)
+	local session = sessions[player]
+	if session and character.Parent then
+		teleportToStage(player, session.stage)
+	end
+end
+
+local function onFinishTouched(finishPart, hit)
+	local character = hit:FindFirstAncestorOfClass("Model")
+	local player = character and Players:GetPlayerFromCharacter(character)
+	local session = player and sessions[player]
+	if not session or session.busy then
+		return
+	end
+	local humanoid = character:FindFirstChildOfClass("Humanoid")
+	if not humanoid or humanoid.Health <= 0 then
+		return
+	end
+	local stage = finishPart:GetAttribute("Stage")
+	if stage ~= session.stage then
+		return
+	end
+
+	session.busy = true
+	local mustTeleport = false
+	if stage >= Config.TOTAL_STAGES then
+		session.wins += 1
+		session.stage = 1
+		mustTeleport = true
+		Notify:FireClient(player, "🏆 BRAVO ! Tu as fini les " .. Config.TOTAL_STAGES .. " niveaux !", "win")
+	else
+		session.stage = stage + 1
+		session.max = math.max(session.max, session.stage)
+		-- Fin de rangée : le niveau suivant est sur la rangée d'à côté
+		mustTeleport = (stage % Config.STAGES_PER_ROW) == 0
+		if stage % 50 == 0 then
+			Notify:FireClient(player, "⭐ " .. stage .. " niveaux terminés !", "milestone")
+		end
+	end
+	publish(player, session)
+	if mustTeleport then
+		teleportToStage(player, session.stage)
+	end
+	task.delay(0.5, function()
+		session.busy = false
+	end)
+end
+
+---------------------------------------------------------------------------
+-- Joueurs
+---------------------------------------------------------------------------
+local function onPlayerAdded(player)
+	local session = { stage = 1, max = 1, wins = 0, loaded = false, busy = false, lastRequest = 0 }
+	sessions[player] = session
+
+	local leaderstats = Instance.new("Folder")
+	leaderstats.Name = "leaderstats"
+	session.stageValue = Instance.new("IntValue")
+	session.stageValue.Name = "Niveau"
+	session.stageValue.Parent = leaderstats
+	session.winsValue = Instance.new("IntValue")
+	session.winsValue.Name = "Victoires"
+	session.winsValue.Parent = leaderstats
+	leaderstats.Parent = player
+	publish(player, session)
+
+	player.CharacterAdded:Connect(function(character)
+		onCharacterAdded(player, character)
+	end)
+	if player.Character then
+		task.spawn(onCharacterAdded, player, player.Character)
+	end
+
+	local saved, ok = loadData(player)
+	if not player.Parent then
+		return
+	end
+	session.loaded = ok
+	if type(saved) == "table" then
+		session.stage = toStage(saved.stage, 1)
+		session.max = math.max(session.stage, toStage(saved.max, 1))
+		session.wins = (type(saved.wins) == "number" and saved.wins >= 0) and math.floor(saved.wins) or 0
+		publish(player, session)
+		if mapReady and session.stage > 1 then
+			teleportToStage(player, session.stage)
+		end
+	end
+end
+
+local function onPlayerRemoving(player)
+	local session = sessions[player]
+	if session then
+		saveData(player, session)
+		sessions[player] = nil
+	end
+end
+
+KillMe.OnServerEvent:Connect(function(player)
+	local character = player.Character
+	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+	if humanoid and humanoid.Health > 0 then
+		humanoid.Health = 0
+	end
+end)
+
+ChangeStage.OnServerEvent:Connect(function(player, target)
+	local session = sessions[player]
+	if not session or not mapReady then
+		return
+	end
+	local now = os.clock()
+	if now - session.lastRequest < 0.3 then
+		return
+	end
+	session.lastRequest = now
+	local stage = toStage(target, nil)
+	if not stage or stage > session.max or stage == session.stage then
+		return
+	end
+	session.stage = stage
+	publish(player, session)
+	teleportToStage(player, stage)
+end)
+
+---------------------------------------------------------------------------
+-- Démarrage
+---------------------------------------------------------------------------
+CollectionService:GetInstanceAddedSignal(Config.TAGS.Finish):Connect(function(part)
+	part.Touched:Connect(function(hit)
+		onFinishTouched(part, hit)
+	end)
+end)
+
+Players.PlayerAdded:Connect(onPlayerAdded)
+Players.PlayerRemoving:Connect(onPlayerRemoving)
+for _, player in Players:GetPlayers() do
+	task.spawn(onPlayerAdded, player)
+end
+
+game:BindToClose(function()
+	for player, session in sessions do
+		task.spawn(saveData, player, session)
+	end
+	task.wait(3)
+end)
+
+-- Sauvegarde automatique toutes les 2 minutes
+task.spawn(function()
+	while true do
+		task.wait(120)
+		for player, session in sessions do
+			task.spawn(saveData, player, session)
+		end
+	end
+end)
+
+local started = os.clock()
+Generator.build()
+mapReady = true
+ReplicatedStorage:SetAttribute("DeathrunReady", true)
+print(string.format("[Deathrun] %d niveaux générés en %.1f s", Config.TOTAL_STAGES, os.clock() - started))
+
+-- Les joueurs arrivés pendant la génération sont placés sur leur niveau
+for player, session in sessions do
+	if session.stage > 1 then
+		task.spawn(teleportToStage, player, session.stage)
+	end
+end
+]]></ProtectedString></Properties></Item></Item></Item><Item class="StarterPlayer" referent="RBX0000000B"><Properties><string name="Name">StarterPlayer</string></Properties><Item class="StarterPlayerScripts" referent="RBX0000000A"><Properties><string name="Name">StarterPlayerScripts</string></Properties><Item class="Folder" referent="RBX00000009"><Properties><string name="Name">DeathrunClient</string></Properties><Item class="LocalScript" referent="RBX00000008"><Properties><string name="Name">Client</string><ProtectedString name="Source"><![CDATA[-- Client : anime les pièges, détecte les morts, affiche l'interface (LocalScript dans StarterPlayerScripts)
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local CollectionService = game:GetService("CollectionService")
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+
+local player = Players.LocalPlayer
+local Config = require(ReplicatedStorage:WaitForChild("DeathrunShared"):WaitForChild("Config"))
+local TAGS = Config.TAGS
+
+local remotes = ReplicatedStorage:WaitForChild(Config.REMOTES_NAME)
+local KillMe = remotes:WaitForChild("KillMe")
+local ChangeStage = remotes:WaitForChild("ChangeStage")
+local Notify = remotes:WaitForChild("Notify")
+
+local ACTIVE_RADIUS = 160 -- on n'anime que les pièges proches du joueur
+local KILL_RADIUS = 40
+
+---------------------------------------------------------------------------
+-- Pièges animés (tous les joueurs voient la même chose grâce à l'heure du serveur)
+---------------------------------------------------------------------------
+local tracked = {} -- [part] = info
+local killParts = {} -- [part] = connexion Touched
+local active = {} -- liste des pièces animées proches
+local overlapParams = OverlapParams.new()
+overlapParams.FilterType = Enum.RaycastFilterType.Include
+overlapParams.FilterDescendantsInstances = {}
+
+local function track(part, kind)
+	if not part:IsA("BasePart") or tracked[part] then
+		return
+	end
+	tracked[part] = {
+		kind = kind,
+		baseCF = part:GetAttribute("BaseCF") or part.CFrame,
+		speed = part:GetAttribute("Speed") or 1,
+		phase = part:GetAttribute("Phase") or 0,
+		amplitude = part:GetAttribute("Amplitude") or Vector3.zero,
+		period = math.max(0.5, part:GetAttribute("Period") or 3),
+		onFraction = part:GetAttribute("OnFraction") or 0.5,
+		on = true,
+		state = nil,
+	}
+end
+
+local function isLethal(part)
+	local info = tracked[part]
+	return not (info and info.kind == "Laser" and not info.on)
+end
+
+local function cycle(info, t)
+	return ((t / info.period) + info.phase) % 1
+end
+
+local function animate(part, info, t)
+	local kind = info.kind
+	if kind == "Spin" then
+		part.CFrame = info.baseCF * CFrame.Angles(0, info.phase + t * info.speed, 0)
+	elseif kind == "Move" then
+		part.CFrame = info.baseCF + info.amplitude * math.sin(cycle(info, t) * math.pi * 2)
+	elseif kind == "Fade" then
+		local c = cycle(info, t)
+		local state = (c >= info.onFraction) and "off" or ((c > info.onFraction - 0.15) and "warn" or "on")
+		if state ~= info.state then
+			info.state = state
+			part.CanCollide = state ~= "off"
+			part.Transparency = (state == "off" and 0.85) or (state == "warn" and 0.45) or 0
+		end
+	elseif kind == "Laser" then
+		local on = cycle(info, t) < info.onFraction
+		if on ~= info.state then
+			info.state = on
+			info.on = on
+			part.CanTouch = on
+			part.Transparency = on and 0.2 or 0.92
+		end
+	end
+end
+
+for kind, tag in { Spin = TAGS.Spin, Move = TAGS.Move, Fade = TAGS.Fade, Laser = TAGS.Laser } do
+	for _, part in CollectionService:GetTagged(tag) do
+		track(part, kind)
+	end
+	CollectionService:GetInstanceAddedSignal(tag):Connect(function(part)
+		track(part, kind)
+	end)
+	CollectionService:GetInstanceRemovedSignal(tag):Connect(function(part)
+		tracked[part] = nil
+	end)
+end
+
+---------------------------------------------------------------------------
+-- Morts
+---------------------------------------------------------------------------
+local dead = false
+
+local function isMine(hit)
+	local character = player.Character
+	return character ~= nil and hit:IsDescendantOf(character)
+end
+
+local function tryKill()
+	if dead then
+		return
+	end
+	local character = player.Character
+	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+	if humanoid and humanoid.Health > 0 then
+		dead = true
+		KillMe:FireServer()
+	end
+end
+
+local function trackKill(part)
+	if not part:IsA("BasePart") or killParts[part] then
+		return
+	end
+	killParts[part] = part.Touched:Connect(function(hit)
+		if isMine(hit) and isLethal(part) then
+			tryKill()
+		end
+	end)
+end
+
+for _, part in CollectionService:GetTagged(TAGS.Kill) do
+	trackKill(part)
+end
+CollectionService:GetInstanceAddedSignal(TAGS.Kill):Connect(trackKill)
+CollectionService:GetInstanceRemovedSignal(TAGS.Kill):Connect(function(part)
+	local connection = killParts[part]
+	if connection then
+		connection:Disconnect()
+		killParts[part] = nil
+	end
+end)
+
+player.CharacterAdded:Connect(function(character)
+	dead = false
+	local humanoid = character:WaitForChild("Humanoid")
+	humanoid.Died:Connect(function()
+		dead = true
+	end)
+end)
+
+-- Liste des pièces proches, recalculée deux fois par seconde
+local function refreshActive()
+	local character = player.Character
+	local root = character and character:FindFirstChild("HumanoidRootPart")
+	table.clear(active)
+	if not root then
+		overlapParams.FilterDescendantsInstances = {}
+		return
+	end
+	local position = root.Position
+	for part, info in tracked do
+		if (info.baseCF.Position - position).Magnitude < ACTIVE_RADIUS then
+			table.insert(active, part)
+		end
+	end
+	local nearbyKill = {}
+	for part in killParts do
+		if (part.Position - position).Magnitude - part.Size.Magnitude / 2 < KILL_RADIUS then
+			table.insert(nearbyKill, part)
+		end
+	end
+	overlapParams.FilterDescendantsInstances = nearbyKill
+end
+
+-- Sécurité en plus de Touched : un piège qui bouge peut "entrer" dans un joueur immobile
+local function overlapCheck()
+	local character = player.Character
+	if dead or not character then
+		return
+	end
+	for _, bodyPart in character:GetChildren() do
+		if bodyPart:IsA("BasePart") then
+			for _, hit in workspace:GetPartsInPart(bodyPart, overlapParams) do
+				if isLethal(hit) then
+					tryKill()
+					return
+				end
+			end
+		end
+	end
+end
+
+local refreshTimer, overlapTimer = 0, 0
+RunService.Heartbeat:Connect(function(dt)
+	refreshTimer += dt
+	if refreshTimer >= 0.5 then
+		refreshTimer = 0
+		refreshActive()
+	end
+
+	local t = workspace:GetServerTimeNow()
+	for _, part in active do
+		local info = tracked[part]
+		if info then
+			animate(part, info, t)
+		end
+	end
+
+	overlapTimer += dt
+	if overlapTimer >= 0.1 then
+		overlapTimer = 0
+		overlapCheck()
+	end
+end)
+
+---------------------------------------------------------------------------
+-- Interface
+---------------------------------------------------------------------------
+local function create(className, props, children)
+	local instance = Instance.new(className)
+	for key, value in props do
+		instance[key] = value
+	end
+	for _, child in children or {} do
+		child.Parent = instance
+	end
+	return instance
+end
+
+local function corner(radius)
+	return create("UICorner", { CornerRadius = UDim.new(0, radius) })
+end
+
+local gui = create("ScreenGui", { Name = "DeathrunUI", ResetOnSpawn = false })
+
+local panel = create("Frame", {
+	AnchorPoint = Vector2.new(0.5, 0),
+	Position = UDim2.new(0.5, 0, 0, 8),
+	Size = UDim2.fromOffset(330, 70),
+	BackgroundColor3 = Color3.fromRGB(20, 20, 30),
+	BackgroundTransparency = 0.2,
+	Parent = gui,
+}, { corner(12) })
+
+local title = create("TextLabel", {
+	Position = UDim2.fromOffset(50, 6),
+	Size = UDim2.new(1, -100, 0, 28),
+	BackgroundTransparency = 1,
+	Font = Enum.Font.GothamBlack,
+	TextScaled = true,
+	TextColor3 = Color3.new(1, 1, 1),
+	Text = "Niveau 1 / " .. Config.TOTAL_STAGES,
+	Parent = panel,
+})
+
+local barBack = create("Frame", {
+	Position = UDim2.fromOffset(50, 38),
+	Size = UDim2.new(1, -100, 0, 10),
+	BackgroundColor3 = Color3.fromRGB(60, 60, 75),
+	Parent = panel,
+}, { corner(5) })
+
+local barFill = create("Frame", {
+	Size = UDim2.fromScale(0, 1),
+	BackgroundColor3 = Color3.fromRGB(60, 230, 90),
+	Parent = barBack,
+}, { corner(5) })
+
+local recordLabel = create("TextLabel", {
+	Position = UDim2.fromOffset(50, 50),
+	Size = UDim2.new(1, -100, 0, 16),
+	BackgroundTransparency = 1,
+	Font = Enum.Font.GothamMedium,
+	TextScaled = true,
+	TextColor3 = Color3.fromRGB(200, 200, 215),
+	Text = "",
+	Parent = panel,
+})
+
+local function button(text, xScale, xOffset)
+	return create("TextButton", {
+		AnchorPoint = Vector2.new(xScale, 0.5),
+		Position = UDim2.new(xScale, xOffset, 0.5, 0),
+		Size = UDim2.fromOffset(38, 50),
+		BackgroundColor3 = Color3.fromRGB(70, 70, 95),
+		Font = Enum.Font.GothamBlack,
+		TextScaled = true,
+		TextColor3 = Color3.new(1, 1, 1),
+		Text = text,
+		Parent = panel,
+	}, { corner(10) })
+end
+
+local prevButton = button("◀", 0, 6)
+local nextButton = button("▶", 1, -6)
+
+local maxButton = create("TextButton", {
+	AnchorPoint = Vector2.new(0.5, 0),
+	Position = UDim2.new(0.5, 0, 0, 82),
+	Size = UDim2.fromOffset(170, 30),
+	BackgroundColor3 = Color3.fromRGB(255, 170, 40),
+	Font = Enum.Font.GothamBold,
+	TextScaled = true,
+	TextColor3 = Color3.new(1, 1, 1),
+	Text = "Aller à mon record",
+	Visible = false,
+	Parent = gui,
+}, { corner(10), create("UIPadding", { PaddingTop = UDim.new(0, 5), PaddingBottom = UDim.new(0, 5) }) })
+
+local toast = create("TextLabel", {
+	AnchorPoint = Vector2.new(0.5, 0.5),
+	Position = UDim2.fromScale(0.5, 0.35),
+	Size = UDim2.new(0.8, 0, 0, 60),
+	BackgroundTransparency = 1,
+	Font = Enum.Font.GothamBlack,
+	TextScaled = true,
+	TextColor3 = Color3.fromRGB(255, 220, 60),
+	TextStrokeTransparency = 0,
+	TextTransparency = 1,
+	TextStrokeColor3 = Color3.new(0, 0, 0),
+	Text = "",
+	Parent = gui,
+})
+
+gui.Parent = player:WaitForChild("PlayerGui")
+
+local function stats()
+	return player:GetAttribute("Stage") or 1, player:GetAttribute("MaxStage") or 1, player:GetAttribute("Wins") or 0
+end
+
+local function refreshUI()
+	local stage, maxStage, wins = stats()
+	title.Text = "Niveau " .. stage .. " / " .. Config.TOTAL_STAGES
+	TweenService:Create(barFill, TweenInfo.new(0.3), {
+		Size = UDim2.fromScale((stage - 1) / Config.TOTAL_STAGES, 1),
+	}):Play()
+	recordLabel.Text = "Record : " .. maxStage .. (wins > 0 and ("   •   Victoires : " .. wins) or "")
+	prevButton.Visible = stage > 1
+	nextButton.Visible = stage < maxStage
+	maxButton.Visible = stage < maxStage
+end
+
+player:GetAttributeChangedSignal("Stage"):Connect(refreshUI)
+player:GetAttributeChangedSignal("MaxStage"):Connect(refreshUI)
+player:GetAttributeChangedSignal("Wins"):Connect(refreshUI)
+refreshUI()
+
+prevButton.Activated:Connect(function()
+	local stage = stats()
+	ChangeStage:FireServer(stage - 1)
+end)
+nextButton.Activated:Connect(function()
+	local stage = stats()
+	ChangeStage:FireServer(stage + 1)
+end)
+maxButton.Activated:Connect(function()
+	local _, maxStage = stats()
+	ChangeStage:FireServer(maxStage)
+end)
+
+local toastId = 0
+Notify.OnClientEvent:Connect(function(message)
+	toastId += 1
+	local id = toastId
+	toast.Text = message
+	toast.TextTransparency = 0
+	toast.TextStrokeTransparency = 0
+	task.delay(3, function()
+		if id == toastId then
+			TweenService:Create(toast, TweenInfo.new(0.6), { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
+		end
+	end)
+end)
+]]></ProtectedString></Properties></Item></Item></Item></Item><Item class="Lighting" referent="RBX0000000C"><Properties><string name="Name">Lighting</string><float name="ClockTime">14.5</float><Color3 name="Ambient"><R>0.35</R><G>0.35</G><B>0.4</B></Color3></Properties></Item></roblox>
