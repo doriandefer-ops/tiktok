@@ -22,3 +22,6 @@ python3 make_videos.py --voix kokoro              # voix féminine hors-ligne (t
 ```
 - **Fonds** : dépose tes propres clips dans `videos/fonds/` (filmés au téléphone, ou des vidéos libres de droits Pexels/Pixabay). Sinon un fond animé est généré.
 - **Textes et voix** : modifie les fonctions `jour1()`, `faux_millionnaires()`, `avant_apres()` dans `make_videos.py`.
+
+## Autre projet du dépôt
+- `masterclass-trading/` : plan directeur d'une masterclass trading gratuite sur YouTube et des Shorts/TikTok qui en sont dérivés.
