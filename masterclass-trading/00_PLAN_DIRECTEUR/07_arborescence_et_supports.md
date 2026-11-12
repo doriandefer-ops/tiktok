@@ -35,7 +35,7 @@ masterclass-trading/
 ├── CHARTE_GRAPHIQUE/                  ← palette, polices, gabarits de miniatures, lower thirds
 ├── MONTAGE/                           ← modèles de projets, animations réutilisables, musiques (licences)
 ├── SEO/                               ← modèle de description, banque de tags, hashtags, mentions légales
-├── CHECKLISTS/                        ← checklist conformité avant publication, checklist tournage
+├── CHECKLISTS/                        ← checklist conformité avant publication, checklist enregistrement
 ├── JOURNAL_TRADING/                   ← journal vierge (CSV / Sheets), grille de revue hebdo
 ├── RESSOURCES/                        ← sources officielles, données historiques, licences.md
 └── EXERCICES/  (vue transverse)       ← index de tous les exercices, par compétence
@@ -94,6 +94,6 @@ Conclusion : malgré une majorité de trades gagnants, cette stratégie perd de 
 | `grille_revue_hebdomadaire.md` | `JOURNAL_TRADING/` |
 | `plan_trading_vierge.md` (11 rubriques) | `MODULE_08_PLAN_DE_TRADING/` |
 | `checklist_conformite_publication.md` | `CHECKLISTS/` |
-| `checklist_tournage.md` | `CHECKLISTS/` |
+| `checklist_enregistrement_voix.md` | `CHECKLISTS/` |
 | `modele_description_youtube.md` + `banque_hashtags.md` | `SEO/` |
 | `sources_officielles.md` (AMF, ACPR, ESMA, impots.gouv) + `licences.md` | `RESSOURCES/` |

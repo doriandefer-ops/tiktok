@@ -4,18 +4,27 @@
 
 Références d'ambiance : documentaires de vulgarisation scientifique, rapports financiers bien conçus, interfaces de terminaux de marché épurés.
 **Mots-clés** : sobre · précis · calme · lisible · data.
-**À bannir** : voitures de luxe, liasses de billets, jets, montres, flammes, fusées, « 🚀💰 », visages hurlants, flèches rouges géantes, captures de gains.
+**À bannir** : voitures de luxe, liasses de billets, jets, montres, flammes, fusées, « 🚀💰 », « visages choqués », flèches rouges géantes, captures de gains.
 
-## Nom de la chaîne et de l'école (à choisir)
+## Nom de la chaîne : **Kelto**
 
-| Proposition | Intention |
-|---|---|
-| **Méthode Marché** | Sérieux, structure, côté école |
-| **Le Graphique Clair** | Pédagogie et lisibilité |
-| **Risque & Méthode** | Le positionnement en un nom : le risque d'abord |
-| **L'École du Trader Lucide** | Anti-vendeurs de rêve |
+- **Nom** : Kelto, court, prononçable, disponible comme marque neutre (sans référence à l'argent ni au luxe).
+- **Signature** : *Kelto — comprendre avant de risquer.*
+- **La masterclass** : « Masterclass Trading Kelto — de zéro au plan de trading ».
+- **Logo** : le mot « kelto » en Space Grotesk Bold minuscule, Craie. Le « o » final est remplacé par un cercle Ambre (une bougie vue de dessus ou un point de mesure). Version icône : le cercle Ambre seul sur fond Encre.
+- **Handles à réserver** : `@kelto` ou `@kelto.trading` / `@kelto_fr` sur YouTube, TikTok, Instagram et LinkedIn.
+  [VÉRIFICATION À EFFECTUER AVANT PUBLICATION] Vérifier sur la base INPI (data.inpi.fr) qu'aucune marque « Kelto » antérieure n'existe en classe 41 (éducation) ou 36 (finance), puis envisager un dépôt.
 
-La masterclass s'appelle **« Masterclass Trading — de zéro au plan de trading »**, avec un sous-titre permanent : *« Comprendre avant de risquer »*.
+## Format sans visage : la voix est le présentateur
+
+- **Voix off** : de préférence ta propre voix, enregistrée au calme avec un micro USB dynamique ou cardioïde, à environ 15 cm, traitée (débruitage, compression légère, normalisation à −16 LUFS).
+  Si tu utilises une voix de synthèse : toujours la même voix (identité sonore), et vérifier les règles de déclaration de contenu synthétique de YouTube et TikTok. [VÉRIFICATION À EFFECTUER AVANT PUBLICATION]
+- **Ce qui remplace le visage à l'écran** :
+  1. **Graphiques animés**, le cœur du visuel (60 % du temps d'écran).
+  2. **Cartes pédagogiques** : définition, piège, à retenir, formule.
+  3. **Écran de plateforme** filmé proprement (enregistrement d'écran 4K, curseur agrandi en Ambre).
+  4. **B-roll « mains et objets »** : mains sur un clavier, un carnet, un stylo qui trace une zone sur un graphique imprimé, une tasse, une lampe de bureau. Jamais de visage, jamais de signes de richesse.
+- **Un repère visuel qui incarne la chaîne** : le **cercle Ambre** du logo sert de « curseur-guide ». Il se déplace sur le graphique pour montrer ce dont la voix parle, et devient le personnage récurrent de la chaîne.
 
 ## Palette de couleurs
 
@@ -32,7 +41,7 @@ La masterclass s'appelle **« Masterclass Trading — de zéro au plan de tradin
 | Version claire | Papier | `#F7F6F2` | Fiches PDF et carrousels, en alternative |
 
 **Règle d'usage** : l'ambre est la couleur de la marque **et** du risque. Chaque fois qu'on parle de risque, l'ambre apparaît. Le spectateur associe inconsciemment la chaîne à la prudence.
-Le vert n'est jamais associé à l'argent gagné du présentateur.
+Le vert n'est jamais associé à de l'argent gagné par l'auteur de la chaîne.
 
 **Codes couleur par niveau** (badges et playlists) : 🟢 Fondations `#3FB68B` · 🔵 Outils `#5B8DEF` · 🟠 Survie `#F2B84B` · 🟣 Autonomie `#A78BFA`.
 
@@ -61,7 +70,7 @@ Les chiffres sont toujours en police monospace, pour donner un côté « mesure 
 | Élément | Description |
 |---|---|
 | **Badge chapitre** | Pastille arrondie en haut à gauche : `M5 · CH18` sur la couleur du niveau |
-| **Lower third présentateur** | Barre Ardoise, filet Ambre de 4 px à gauche, nom en Space Grotesk et rôle en Inter |
+| **Lower third de section** | Barre Ardoise, filet Ambre de 4 px à gauche, numéro et titre de la partie en Space Grotesk, sous-titre en Inter |
 | **Carte « Définition »** | Encart Ardoise avec le mot en Ambre, la définition en Craie et une icône livre |
 | **Carte « Piège fréquent »** | Encart avec un filet Corail et une icône ⚠ |
 | **Carte « À retenir »** | Encart avec un filet Sauge et une icône ✓ |
@@ -87,7 +96,7 @@ Les chiffres sont toujours en police monospace, pour donner un côté « mesure 
 | Vidéo longue | 4 à 8 s | toutes les 10 à 15 s (zoom, annotation, carte) | Lo-fi ou ambient, à −28 LUFS sous la voix, coupée pendant les calculs |
 | Short / TikTok | 1,5 à 3 s | toutes les 2 à 3 s | Plus rythmée et discrète, ou son tendance neutre |
 
-- Plateau : face caméra sur fond sombre ou bureau épuré (lumière principale douce et chaude, contre-jour léger), écran de graphiques flouté à l'arrière-plan.
+- B-roll de bureau (mains, carnet, clavier) : lumière douce et chaude, fond sombre, faible profondeur de champ. Toujours filmé sans visage.
 - Sous-titres en vidéo longue : sobres, en bas, Inter SemiBold 600.
 - Sous-titres en Short : centrés aux ⅔ de l'écran, mot clé surligné en Ambre, 2 à 4 mots par ligne.
 
@@ -97,7 +106,7 @@ Les chiffres sont toujours en police monospace, pour donner un côté « mesure 
 - Fond Encre et **un seul** élément visuel fort à droite (une bougie géante, un graphique simplifié, une jauge de risque ou une formule).
 - Texte de 2 à 5 mots à gauche en Space Grotesk Bold, Craie, **1 mot en Ambre**.
 - Badge du niveau en haut à gauche (`M2 · 07`).
-- Visage (si présentateur) : expression **concentrée, interrogative ou sceptique**, jamais euphorique. Regard vers l'élément visuel.
+- **Pas de visage** : l'élément « humain » est remplacé par le cercle Ambre (curseur-guide) posé sur la zone clé, ou par une main qui pointe ou trace.
 - Contraste : vérifier la lisibilité en 160 × 90 px.
 
 **Exemples**

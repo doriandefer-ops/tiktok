@@ -1,6 +1,6 @@
 # 01 — Architecture complète de la masterclass
 
-> **Statut : plan directeur, en attente de validation.** Aucun script complet n'est rédigé à ce stade.
+> **Statut : ✅ validé.** Chaîne **Kelto** · format sans visage · 1 chapitre par semaine + 1 Short par jour.
 
 ## Vue d'ensemble
 
@@ -39,7 +39,7 @@
 
 | # | Chapitre | Durée | À la fin, l'élève sait… | Exemple fil rouge | ⚖️ |
 |---|---|---|---|---|---|
-| **01** | Qu'est-ce que le trading ? Trading vs investissement | 14 min | distinguer trader, investir et spéculer, et expliquer pourquoi un prix bouge (offre et demande, carnet d'ordres) | La même action Air Liquide, vue par un investisseur sur 10 ans et par un trader sur 2 jours | — |
+| **01** | Qu'est-ce que le trading ? Trading vs investissement | 14 min | distinguer trader, investir et spéculer, et expliquer pourquoi un prix bouge (offre et demande, carnet d'ordres) | La même action (entreprise fictive « Lampadis »), vue par une investisseuse sur 10 ans et par un trader sur 2 jours | — |
 | **02** | Les marchés : actions, indices, forex, crypto, matières premières | 20 min | citer les caractéristiques de chaque marché (horaires, volatilité, liquidité, ce qui fait bouger le prix) | Une même journée vue sur le CAC 40, l'EUR/USD, le BTC et l'or | ⚖️ crypto (MiCA) |
 | **03** | CFD, produits dérivés et effet de levier | 18 min | expliquer un CFD, la marge, l'appel de marge, et pourquoi le levier multiplie aussi les pertes | 1 000 € avec un levier de 1:5 et de 1:30 : ce que fait un mouvement de −3 % | ⚖️⚖️ |
 | **04** | Comment fonctionne un broker ? Spread, commissions et frais | 16 min | lire une fiche de frais, calculer le coût réel d'un aller-retour et comprendre les frais de financement overnight | Coût total de 20 trades par mois sur un compte de 2 000 € | ⚖️⚖️ |

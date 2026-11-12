@@ -11,7 +11,7 @@
   5 Shorts   2 TikTok       1 carrousel    1 post         1 teaser    1 fiche PDF
   (20-60 s)  éducatifs      Insta/LinkedIn Communauté YT  (15 s, J-1) (lead magnet)
              (60-90 s,      (6-8 slides)   (quiz/sondage)
-             face caméra)
+             format tableau blanc)
       │          │              │              │              │           │
       └──────────┴──────────────┴──────┬───────┴──────────────┴───────────┘
                                        ▼
@@ -21,7 +21,7 @@
 | Contenu | Plateforme | Source | Rôle |
 |---|---|---|---|
 | **5 Shorts** | YouTube Shorts + TikTok + Reels (même fichier) | Extraits retravaillés du chapitre, ou séquence animée dédiée | Découverte, portée |
-| **2 TikTok éducatifs** | TikTok d'abord, puis Shorts | Face caméra natif, sans recyclage | Format « prof » qui crée la confiance et l'abonnement |
+| **2 TikTok éducatifs** | TikTok d'abord, puis Shorts | Format natif « tableau blanc » : voix et animation qui se dessine en direct, sans recyclage | Format « prof » qui crée la confiance et l'abonnement |
 | **1 carrousel** | Instagram + LinkedIn | Les visuels du chapitre | Sauvegardes, portée hors vidéo |
 | **1 post Communauté** | YouTube | Question ou quiz du chapitre | Engagement des abonnés existants |
 | **1 teaser** | Shorts + TikTok, la veille | Le hook du chapitre | Créer le rendez-vous |
@@ -61,7 +61,7 @@ Un Short doit **apprendre quelque chose de complet** en moins de 60 s. Le renvoi
 |---|---|---|---|---|---|
 | **Rôle** | L'école, la profondeur | Pont vers le long format | Portée, nouvelle audience | Sauvegardes (carrousels) | Crédibilité, audience adulte |
 | **Ton** | Professeur posé | Direct | Direct, tutoiement | Visuel | Plus formel, vouvoiement possible |
-| **Fréquence (mois 1)** | 2 chapitres par semaine | 1 par jour | 1 à 2 par jour | 1 carrousel par semaine + Reels | 1 post par semaine |
+| **Fréquence** | **1 chapitre par semaine** (le mardi) | **1 par jour** | 1 par jour (le même que le Short) | 1 carrousel par semaine + Reels | 1 post par semaine |
 | **KPI principal** | Durée de visionnage, rétention à 30 s et 50 % | Abonnés gagnés, clics vers la vidéo liée | Partages, sauvegardes | Sauvegardes | Commentaires |
 
 ## Architecture de la chaîne YouTube
@@ -86,8 +86,8 @@ Un Short doit **apprendre quelque chose de complet** en moins de 60 s. Le renvoi
 | Étape | Livrable | Dossier |
 |---|---|---|
 | 1. Script validé | `CHxx_script.md` | `MODULE_xx/CHxx/` |
-| 2. Découpage Shorts **avant tournage** | `CHxx_shorts.md` (timecodes visés) | idem |
-| 3. Tournage (long + 2 TikTok face caméra le même jour) | rushes | hors dépôt |
+| 2. Découpage Shorts **avant l'enregistrement** | `CHxx_shorts.md` (timecodes visés) | idem |
+| 3. Enregistrement de la voix off (chapitre + voix des Shorts natifs, en une session) et B-roll « mains » | pistes audio, rushes | hors dépôt |
 | 4. Animations et graphiques | projets AE / Motion Canvas | `MONTAGE/` |
 | 5. Montage long | export 16:9 | hors dépôt |
 | 6. Montage Shorts (5) + teaser | exports 9:16 | hors dépôt |
@@ -95,7 +95,9 @@ Un Short doit **apprendre quelque chose de complet** en moins de 60 s. Le renvoi
 | 8. SEO (titre, description, tags, timestamps, commentaire épinglé) | `CHxx_seo.md` | idem |
 | 9. Contrôle conformité (checklist) | case cochée | `CHECKLISTS/` |
 
-**Conseil** : avoir **au moins 5 chapitres terminés avant le lancement** (CH00 à CH04). Deux chapitres par semaine, c'est exigeant : si la cadence n'est pas tenable, passer à 1 par semaine et garder 1 Short par jour, ce qui suffit pour développer l'audience.
+**Cadence retenue** : **1 chapitre par semaine + 1 Short par jour**. Chaque chapitre doit donc fournir **7 contenus courts** (6 Shorts + 1 teaser) pour couvrir sa semaine. Avoir **3 chapitres d'avance** au lancement (CH00 à CH02, plus leurs Shorts) pour absorber les imprévus.
+
+**Budget de temps indicatif par semaine** : script 4 h · voix 1 h 30 · animations 6 h · montage long 4 h · Shorts 4 h · miniature et SEO 1 h 30, soit environ 21 h.
 
 ## Indicateurs de suivi (revue hebdomadaire)
 

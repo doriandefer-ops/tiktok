@@ -1,87 +1,94 @@
 # 06 — Calendrier éditorial des 30 premiers jours
 
+**Cadence retenue** : **1 chapitre long par semaine (le mardi) + 1 Short par jour.**
+
 **Hypothèses**
-- J1 est un **mardi**. Les chapitres longs sortent le **mardi et le vendredi**, à heure fixe (à ajuster selon les statistiques d'audience, souvent en fin d'après-midi en semaine).
-- **Stock avant lancement** : CH00 à CH04 terminés, avec leurs Shorts.
-- Les Shorts sont publiés **le même jour sur YouTube Shorts, TikTok et Reels**.
-- Ce premier mois couvre **CH00 à CH09**, soit les modules 1 et 2 complets.
+- J1 est un **mardi**. L'heure de publication est fixe, à ajuster après 3 semaines selon les statistiques (souvent entre 17 h et 19 h en semaine).
+- **Stock avant lancement** : CH00, CH01 et CH02 terminés, avec tous leurs Shorts.
+- Chaque Short est publié **le même jour sur YouTube Shorts, TikTok et Instagram Reels**.
+- Chaque chapitre fournit **7 contenus courts** : 1 teaser (le lundi, veille de la sortie) et 6 Shorts (du mardi au dimanche).
+- Le mois 1 couvre **CH00 + CH01 à CH05**, soit le module 1 complet.
 
-**Légende** : 🎬 chapitre long · 📱 Short (YT + TikTok + Reels) · 🎓 TikTok éducatif face caméra · 🖼️ carrousel · 💬 post Communauté · 🔔 teaser · 📄 fiche PDF
+**Légende** : 🎬 chapitre long · 📱 Short (YT + TikTok + Reels) · 🔔 teaser (compte comme le Short du jour) · 🖼️ carrousel · 💬 post Communauté · 📄 fiche PDF
 
-## Semaine 1 — Lancement et Module 1
-
-| Jour | 🎬 Long | 📱 Short du jour (source) | Autres |
-|---|---|---|---|
-| **J1** mar | **CH00 + CH01** Qu'est-ce que le trading ? | « Trader ≠ investir en 30 s » (CH01) | 💬 Bienvenue + sondage « Ton niveau en trading ? » |
-| **J2** mer | | « Pourquoi le prix bouge vraiment » (CH01) | 🎓 « Ce que cette formation ne te promettra jamais » (CH00) |
-| **J3** jeu | | « Spéculer, investir, trader : 3 horizons » (CH01) | 🔔 Teaser CH02 |
-| **J4** ven | **CH02** Les marchés | « Le marché qui ne dort jamais, et pourquoi c'est un piège » (CH02, crypto) | |
-| **J5** sam | | « Le CAC 40, ce n'est pas une entreprise » (CH02) | 🖼️ « 5 marchés, 5 personnalités » |
-| **J6** dim | | « Forex : pourquoi les mouvements semblent minuscules » (CH02) | 💬 Quiz CH01-CH02 (3 questions) |
-| **J7** lun | | « Le levier expliqué avec 100 € » (CH03) | 🔔 Teaser CH03 |
-
-## Semaine 2 — Levier, frais, ordres
+## Semaine 1 — Lancement : CH00 + CH01
 
 | Jour | 🎬 Long | 📱 Short du jour | Autres |
 |---|---|---|---|
-| **J8** mar | **CH03** CFD et effet de levier | « Levier 30 : un mouvement de 3,3 % suffit à effacer ta marge » (CH03) | |
-| **J9** mer | | « L'appel de marge, ce qui se passe vraiment » (CH03) | 🎓 « Ce chiffre que les brokers doivent afficher » (CH03) |
-| **J10** jeu | | « Le levier ne change pas ton risque, ta taille si » (CH03 → teaser M5) | 🔔 Teaser CH04 |
-| **J11** ven | **CH04** Broker, spread et frais | « Le spread : le frais invisible » (CH04) | |
-| **J12** sam | | « Le swap : le frais que personne ne regarde » (CH04) | 🖼️ « Combien coûte vraiment un trade ? » |
-| **J13** dim | | « 20 trades par mois : le vrai coût » (CH04) | 💬 Sondage « Tu connaissais le swap ? » |
-| **J14** lun | | « Ton stop-loss n'est pas une garantie » (CH05) | 🔔 Teaser CH05 |
+| **J1** mar | **CH00** Bande-annonce + **CH01** Qu'est-ce que le trading ? | CH01-S1 « Trader ou investir : la différence en 30 s » | 💬 Bienvenue + sondage « Ton niveau en trading ? » |
+| **J2** mer | | CH00-S1 « Ce que cette formation ne te promettra jamais » | |
+| **J3** jeu | | CH01-S2 « Pourquoi le prix bouge vraiment » | |
+| **J4** ven | | CH01-S3 « Le carnet d'ordres en 40 s » | 🖼️ « Trader, investir, spéculer : 3 horizons » |
+| **J5** sam | | CH01-S4 « Le trading est un jeu à somme nulle… ou pire ? » | |
+| **J6** dim | | CH01-S5 « Ce chiffre que les brokers doivent afficher » | 💬 Quiz CH01 (3 questions) |
+| **J7** lun | | 🔔 Teaser CH02 « 5 marchés, 5 personnalités » | |
 
-## Semaine 3 — Fin du Module 1, début du Module 2
-
-| Jour | 🎬 Long | 📱 Short du jour | Autres |
-|---|---|---|---|
-| **J15** mar | **CH05** Les ordres | « Ordre au marché ou limite, en 30 s » (CH05) | |
-| **J16** mer | | « Le gap : quand ton stop saute » (CH05) | 🎓 « 3 ordres, 3 situations » (CH05) |
-| **J17** jeu | | « Le Module 1 en 60 s » (récap) | 📄 **Fiche récap M1** + 🔔 Teaser CH06 |
-| **J18** ven | **CH06** Bougies et timeframes | « Lire une bougie en 20 s » (CH06) | |
-| **J19** sam | | « Ta bougie 5 min ment, regarde le daily » (CH06) | 🖼️ « Anatomie d'une bougie » |
-| **J20** dim | | « Une journée = 1 bougie… ou 96 » (CH06) | 💬 **Quiz Module 1** (lien vers le quiz complet) |
-| **J21** lun | | « Une longue mèche : ce qu'elle raconte, et ce qu'elle ne raconte pas » (CH06) | 🔔 Teaser CH07 |
-
-## Semaine 4 — Module 2
+## Semaine 2 — CH02 Les marchés
 
 | Jour | 🎬 Long | 📱 Short du jour | Autres |
 |---|---|---|---|
-| **J22** mar | **CH07** Tendance et structure | « Tendance haussière : la définition simple » (CH07) | |
-| **J23** mer | | « Le range : quand le marché hésite » (CH07) | 🎓 « La cassure de structure expliquée » (CH07) |
-| **J24** jeu | | « Le piège : voir des tendances partout » (CH07) | 🔔 Teaser CH08 |
-| **J25** ven | **CH08** Supports et résistances | « Un support, c'est une zone, pas une ligne » (CH08) | |
-| **J26** sam | | « Le flip support/résistance » (CH08) | 🖼️ « Tracer une zone en 4 étapes » |
-| **J27** dim | | 🧪 Exercice éclair : « Où est le support ? » (CH08, données fictives) | 💬 Exercice graphique, correction le lendemain |
-| **J28** lun | | « Le piège du faux breakout » (CH09) | 🔔 Teaser CH09 |
+| **J8** mar | **CH02** Les marchés | « Le CAC 40, ce n'est pas une entreprise » | |
+| **J9** mer | | « Forex : pourquoi les mouvements semblent minuscules » | |
+| **J10** jeu | | « Le marché qui ne dort jamais, et pourquoi c'est un piège » (crypto) | |
+| **J11** ven | | « Ce qui fait bouger le prix du pétrole » | 🖼️ « 5 marchés, 5 personnalités » |
+| **J12** sam | | « Liquidité : pourquoi c'est important pour toi » | |
+| **J13** dim | | « Actions, indices, forex : quel marché est ouvert quand ? » | 💬 Sondage « Quel marché t'intrigue le plus ? » |
+| **J14** lun | | 🔔 Teaser CH03 « Le levier expliqué avec 100 € » | |
 
-## J29 – J30 — Clôture du mois
+## Semaine 3 — CH03 CFD et effet de levier
 
 | Jour | 🎬 Long | 📱 Short du jour | Autres |
 |---|---|---|---|
-| **J29** mar | **CH09** Volumes, volatilité, breakout, pullback | « Breakout ou pullback ? » (CH09) | |
-| **J30** mer | | « Le Module 2 en 60 s » (récap) | 🎓 « Ce que les volumes ne disent pas » (CH09) · 📄 **Fiche récap M2** · 💬 « La suite : le Module 3, l'analyse technique sans magie » |
+| **J15** mar | **CH03** CFD et effet de levier | « Levier 30 : un mouvement de 3,3 % suffit à effacer ta marge » | |
+| **J16** mer | | « L'appel de marge, ce qui se passe vraiment » | |
+| **J17** jeu | | « Le levier ne change pas ton risque, ta taille si » | |
+| **J18** ven | | « Un CFD, ce n'est pas une action » | 🖼️ « Le levier en 6 slides » |
+| **J19** sam | | « Pourquoi le levier est plafonné en Europe » | |
+| **J20** dim | | CH01-S6 (réserve) « Spéculer n'est pas un gros mot, mais… » | 💬 Exercice « Calcule ta marge » |
+| **J21** lun | | 🔔 Teaser CH04 « Le frais que personne ne regarde » | |
+
+## Semaine 4 — CH04 Broker et frais
+
+| Jour | 🎬 Long | 📱 Short du jour | Autres |
+|---|---|---|---|
+| **J22** mar | **CH04** Broker, spread et frais | « Le spread : le frais invisible » | |
+| **J23** mer | | « Le swap : le frais qui tombe chaque nuit » | |
+| **J24** jeu | | « 20 trades par mois : le vrai coût » | |
+| **J25** ven | | « Market maker ou ECN : qui est en face de toi ? » | 🖼️ « Combien coûte vraiment un trade ? » |
+| **J26** sam | | « Le spread s'élargit aux annonces » | |
+| **J27** dim | | « 3 lignes à lire dans la grille tarifaire » | 💬 Sondage « Tu connaissais le swap ? » |
+| **J28** lun | | 🔔 Teaser CH05 « Ton stop-loss n'est pas une garantie » | |
+
+## J29 – J30 — CH05, fin du Module 1
+
+| Jour | 🎬 Long | 📱 Short du jour | Autres |
+|---|---|---|---|
+| **J29** mar | **CH05** Les ordres | « Ordre au marché ou limite, en 30 s » | 📄 **Fiche récap Module 1** |
+| **J30** mer | | « Le gap : quand ton stop saute » | 💬 **Quiz Module 1** (lien vers le quiz complet) |
 
 ## Bilan du mois 1
 
 | | Volume |
 |---|---|
-| 🎬 Chapitres longs | 10 (CH00 à CH09) |
-| 📱 Shorts multiplateformes | 30 |
-| 🎓 TikTok éducatifs | 5 *(objectif 2 par chapitre dès le mois 2, une fois le rythme de tournage installé)* |
+| 🎬 Chapitres longs | 6 (CH00 + CH01 à CH05) |
+| 📱 Shorts / TikTok / Reels (dont teasers) | 30 |
 | 🖼️ Carrousels | 4 |
 | 💬 Posts Communauté | 6 |
-| 🔔 Teasers | 8 |
-| 📄 Fiches PDF | 2 |
-| **Total** | **65 contenus** issus de 10 tournages longs et de 5 sessions face caméra |
+| 📄 Fiches PDF | 1 |
+| **Total** | **47 publications** |
 
-**Banque de réserve** : les Shorts produits mais non publiés (environ 2 par chapitre) restent en stock pour les jours sans inspiration, ou pour relancer un ancien chapitre lorsqu'un nouveau chapitre y fait référence.
+**Banque de réserve** : 1 à 2 Shorts par chapitre restent en stock pour couvrir un imprévu, ou pour relancer un ancien chapitre (exemple : J20).
 
-## Mois 2 et suivants (aperçu)
+## Calendrier global (1 chapitre par semaine)
 
-| Mois | Chapitres | Temps fort éditorial |
+| Période | Chapitres | Temps fort |
 |---|---|---|
-| **M+1** | CH10 → CH17 | Lancement du **Module 5, « le plus important »**, avec une série de Shorts « Calcul en 40 s » |
-| **M+2** | CH18 → CH25 | Série « 70 % gagnant et pourtant perdant » (statistiques) + publication du **plan de trading vierge** |
-| **M+3** | CH26 → CH30 | Série « Arnaque décodée » + vidéo bilan « Ce que tu sais faire maintenant » + **live Q&R** éducatif (sans conseil personnalisé) |
+| Mois 1 (S1-S5) | CH00 → CH05 | Module 1 complet |
+| Mois 2 (S6-S9) | CH06 → CH09 | Module 2 : série « Lire un graphique en 20 s » |
+| Mois 3 (S10-S13) | CH10 → CH13 | Module 3 : série « Vrai ou faux » sur les indicateurs |
+| Mois 4 (S14-S17) | CH14 → CH17 | Module 4 + **lancement du Module 5, « le plus important »** |
+| Mois 5 (S18-S22) | CH18 → CH22 | Série « Calcul en 40 s » + « 70 % gagnant et pourtant perdant » |
+| Mois 6 (S23-S26) | CH23 → CH26 | **Plan de trading vierge + journal** publiés |
+| Mois 7 (S27-S30) | CH27 → CH30 | Série « Arnaque décodée » + vidéo bilan |
+
+Masterclass complète en **environ 30 semaines**. Les Shorts quotidiens entretiennent l'audience entre deux chapitres.

@@ -1,10 +1,11 @@
-# Masterclass Trading — de zéro au plan de trading
+# Kelto — Masterclass Trading, de zéro au plan de trading
 *« Comprendre avant de risquer »*
 
 Une école de trading gratuite sur YouTube, pour les débutants : **31 vidéos (≈ 8 h 40)**, 10 modules, environ 150 Shorts/TikTok qui en sont dérivés.
 Contenu éducatif : aucune promesse de gain, aucun conseil personnalisé, le risque d'abord.
 
-> **Statut** : 📐 plan directeur, en attente de validation. Les scripts seront rédigés chapitre par chapitre après validation.
+> **Statut** : ✅ plan validé. Chaîne **Kelto**, format **sans visage** (voix off et animations), cadence **1 chapitre par semaine + 1 Short par jour**.
+> En production : CH00 et CH01 (fiches complètes dans `MODULE_01_COMPRENDRE_LE_TRADING/`).
 
 ## Plan directeur
 
